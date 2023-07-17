@@ -7,19 +7,23 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 let accessToken: any;
 
-const getYTData = async (pageToken = ''): Promise<any> => {
+const getNextWeekFromGoogle = async (pageToken = ''): Promise<any> => {
   try {
-    console.log(
-      'this is the access token when getYTdata is called',
-      accessToken
-    );
+    console.log('this is the access token when GNWFG is called', accessToken);
+
     const currentDate = new Date();
-    const startOfWeek = new Date(
-      currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+    const nextWeekStart = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + (7 - currentDate.getDay()) + 1
     );
-    const endOfWeek = new Date(
-      currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 7)
+    const nextWeekEnd = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + (7 - currentDate.getDay()) + 8
     );
+    console.log('this is nextweekstart', nextWeekStart);
+    console.log('this is nextweekend', nextWeekEnd);
 
     const { data } = await axios.get(
       // 'https://www.googleapis.com/calendar/v3/users/me/calendarList',
@@ -29,26 +33,22 @@ const getYTData = async (pageToken = ''): Promise<any> => {
           Authorization: `Bearer ${accessToken}`,
         },
         params: {
-          timeMin: startOfWeek.toISOString(),
-          timeMax: endOfWeek.toISOString(),
+          timeMin: nextWeekStart.toISOString(),
+          timeMax: nextWeekEnd.toISOString(),
+          orderBy: 'startTime',
+          singleEvents: true,
         },
       }
     );
 
-    // const { data } = await axios.get(
-    //   `https://youtube.googleapis.com/youtube/v3/subscriptions?mine=true&pageToken=${pageToken}&maxResults=50&part=snippet`,
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${accessToken}`,
-    //     },
-    //   }
-    // );
+    // if (data?.nextPageToken) {
+    //   return data.items.concat(await getNextWeekFromGoogle(data.nextPageToken));
+    // }
 
-    if (data?.nextPageToken) {
-      return data.items.concat(await getYTData(data.nextPageToken));
-    }
-
-    return data.items;
+    // return data.items;
+    return data.items.map((event: any) => {
+      return event.summary;
+    });
   } catch (error) {
     console.log('this is the error', (error as Error).message);
     return (error as Error).message;
@@ -64,9 +64,9 @@ export default async function handler(
     // you will have to pass your secret as `secret` to `getToken`
     const token = await getToken({ req });
     accessToken = token?.accessToken;
-    const data = await getYTData();
+    const data = await getNextWeekFromGoogle();
 
-    console.log('this is the data', data);
+    console.log('this is the data', data.join('\n'));
     // console.log('hopefully this is token', token?.jti);
     // const data = await getYTData();
     res.json(data);
