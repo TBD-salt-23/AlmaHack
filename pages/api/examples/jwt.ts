@@ -13,12 +13,24 @@ const getYTData = async (pageToken = ''): Promise<any> => {
       'this is the access token when getYTdata is called',
       accessToken
     );
+    const currentDate = new Date();
+    const startOfWeek = new Date(
+      currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+    );
+    const endOfWeek = new Date(
+      currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 7)
+    );
+
     const { data } = await axios.get(
       // 'https://www.googleapis.com/calendar/v3/users/me/calendarList',
       'https://www.googleapis.com/calendar/v3/calendars/primary/events',
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          timeMin: startOfWeek.toISOString(),
+          timeMax: endOfWeek.toISOString(),
         },
       }
     );
