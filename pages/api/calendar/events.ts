@@ -54,8 +54,6 @@ export default async function handler(
     try {
       const token = await getToken({ req });
       accessToken = token?.accessToken as string;
-      console.log('the accessToken looks like this', accessToken);
-      console.log('the token itself looks like this', token);
       const data = await getNextWeekFromGoogle();
       return res.json({ content: data });
     } catch (error) {
