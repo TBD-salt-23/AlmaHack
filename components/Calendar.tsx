@@ -22,8 +22,8 @@ export default function Calendar() {
         setContent(
           json.content.map((event: ApiEvent) => {
             return (
-              <li key={uuid()}>
-                <h3>{event.summary}</h3>
+              <li key={uuid()} className="event__list-item">
+                <h3 className="event__list__heading">{event.summary}</h3>
                 <p>
                   {parseTimeNicely(event.start.dateTime)} -{' '}
                   {parseTimeNicely(event.end.dateTime)}
@@ -45,7 +45,9 @@ export default function Calendar() {
     <>
       <h1>Events next week</h1>
       <ul>
-        <strong>{content ?? '\u00a0'}</strong>
+        {/* The guy below used to be ?? */}
+        {content ||
+          'Issues loading events, try signing out and then back in :)'}
       </ul>
     </>
   );

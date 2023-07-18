@@ -2,8 +2,6 @@ import Calendar from '../components/Calendar';
 import Layout from '../components/layout';
 import EventForm from '../components/EventForm';
 
-//TODO: WHAT HOURS ARE YOU FREE?
-
 export default function IndexPage() {
   return (
     <Layout>
