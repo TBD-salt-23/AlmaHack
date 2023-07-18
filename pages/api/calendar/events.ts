@@ -36,8 +36,11 @@ const getNextWeekFromGoogle = async (): Promise<any> => {
 
     return data.items;
   } catch (error) {
-    console.log('this is the error', (error as Error).message);
-    return { error: (error as Error).message };
+    console.log(
+      'this is the error from within the axios get',
+      (error as Error).message
+    );
+    throw new Error((error as Error).message);
   }
 };
 
@@ -51,6 +54,7 @@ export default async function handler(
     try {
       const token = await getToken({ req });
       accessToken = token?.accessToken as string;
+      console.log('the token looks like this', accessToken);
       const data = await getNextWeekFromGoogle();
       return res.json({ content: data });
     } catch (error) {
