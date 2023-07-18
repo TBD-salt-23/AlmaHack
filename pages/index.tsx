@@ -1,13 +1,16 @@
-import Layout from "../components/layout"
+import Calendar from '../components/Calendar';
+import Layout from '../components/layout';
+import EventForm from '../components/EventForm';
+
+//TODO: WHAT HOURS ARE YOU FREE?
 
 export default function IndexPage() {
   return (
     <Layout>
-      <h1>NextAuth.js Example</h1>
-      <p>
-        This is an example site to demonstrate how to use{" "}
-        <a href="https://next-auth.js.org">NextAuth.js</a> for authentication.
-      </p>
+      <EventForm />
+      <section className="upcoming__section">
+        <Calendar />
+      </section>
     </Layout>
-  )
+  );
 }
