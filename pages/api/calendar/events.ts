@@ -8,7 +8,7 @@ import { authOptions } from '../auth/[...nextauth]';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { BASE_URL } from '../../../utils/consts';
 import { weekBoundaries } from '../../../utils/helpers';
-let accessToken: any;
+let accessToken: string;
 
 const getNextWeekFromGoogle = async (): Promise<any> => {
   try {
@@ -50,7 +50,7 @@ export default async function handler(
   if (session) {
     try {
       const token = await getToken({ req });
-      accessToken = token?.accessToken;
+      accessToken = token?.accessToken as string;
       const data = await getNextWeekFromGoogle();
       return res.json({ content: data });
     } catch (error) {

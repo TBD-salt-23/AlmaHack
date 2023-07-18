@@ -28,7 +28,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('this is request body in post guy', req.body);
   const session = await getServerSession(req, res, authOptions);
   const body = req.body;
 
@@ -40,6 +39,7 @@ export default async function handler(
       console.log('this is the data from the post guy', data);
       return res.json({ content: data });
     } catch (error) {
+      console.log('there is an error failing in post event handler');
       return res.json((error as Error).message);
     }
   }

@@ -16,15 +16,12 @@ export const weekBoundaries = () => {
   return [currentDate, nextWeekStart, nextWeekEnd];
 };
 
-export const parseTimeNicely = (time: string) => {
-  return `${
-    DAYS_OF_WEEK[new Date(time).getDay() as keyof typeof DAYS_OF_WEEK]
-  } ${new Date(time).getMonth() + 1}/${new Date(time).getDate()} ${new Date(
-    time
-  )
+export const parseTimeNicely = (time: string) =>
+  `${DAYS_OF_WEEK[new Date(time).getDay() as keyof typeof DAYS_OF_WEEK]} ${
+    new Date(time).getMonth() + 1
+  }/${new Date(time).getDate()} ${new Date(time)
     .toLocaleTimeString()
     .substring(0, 5)}`;
-};
 
 export const hoursToMiliseconds = (hours: number) => {
   return hours * 60 * 60 * 1000;
@@ -52,9 +49,9 @@ export function shuffle(array: any[]) {
 }
 
 const hoursMinutesToUnix = (timeWindow: string) => {
-  // if (timeWindow.length !== 5) {
-  //   return [console.log('length is wrong in hoursminutestounix')];
-  // }
+  if (timeWindow.length !== 5) {
+    throw new Error('Somehow this time is the wrong amount of characters');
+  }
   const timeWindowHours = parseInt(timeWindow.substring(0, 2)) * 60 * 60 * 1000;
   const timeWindowMinutes = parseInt(timeWindow.substring(3, 5)) * 60 * 1000;
   return [timeWindowHours, timeWindowMinutes];
@@ -63,7 +60,7 @@ const hoursMinutesToUnix = (timeWindow: string) => {
 export const generateAppropriateTime = (
   startWindow: string,
   endWindow: string,
-  duration: string
+  durationMiliSeconds: number
 ) => {
   const [currentDate, nextWeekStart, nextWeekEnd] = weekBoundaries();
 
@@ -76,20 +73,21 @@ export const generateAppropriateTime = (
   const nextWeekEndUnix = nextWeekEnd.getTime();
   const appropriateTimeSlot = [];
   for (
-    let i = nextWeekStartUnix;
-    i < nextWeekEndUnix;
-    i += 1000 * 60 * 60 * 24
+    let dayIterator = nextWeekStartUnix;
+    dayIterator < nextWeekEndUnix;
+    dayIterator += 1000 * 60 * 60 * 24
   ) {
     for (
-      let j = i + startWindowUnixHours + startWindowUnixMinutes;
-      j < i + endWindowUnixHours + endWindowUnixMinutes;
-      j += 15 * 60 * 1000
+      let quarterIterator =
+        dayIterator + startWindowUnixHours + startWindowUnixMinutes;
+      quarterIterator <
+      dayIterator +
+        endWindowUnixHours +
+        endWindowUnixMinutes -
+        durationMiliSeconds;
+      quarterIterator += 15 * 60 * 1000
     ) {
-      appropriateTimeSlot.push(j);
-      console.log(
-        'this is what we are pushing to appropriate timeslot',
-        new Date(j)
-      );
+      appropriateTimeSlot.push(quarterIterator);
     }
   }
   return appropriateTimeSlot;
