@@ -9,6 +9,9 @@ import {
 } from '../utils/helpers';
 import { CalendarResponse } from '../utils/types';
 import { v4 as uuid } from 'uuid';
+import { toast } from 'react-toastify';
+import { useSession } from 'next-auth/react';
+import AccessDenied from './access-denied';
 
 //TODO: IMPLEMENT TOASTIFY FOR ERROR HANDLING
 
@@ -160,6 +163,11 @@ const EventForm = (props: EventFormProps) => {
   const eventTimeEnd = useRef<HTMLInputElement>(null);
   const eventSelectCalendar = useRef<HTMLSelectElement>(null);
 
+  const { data: session } = useSession();
+  if (!session) {
+    return <AccessDenied />;
+  }
+
   const occupiedSlots = getOccupiedSlots(eventList);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -172,6 +180,7 @@ const EventForm = (props: EventFormProps) => {
       return;
     }
     if (startWindow >= endWindow) {
+      toast.error('Start time must be earlier than end time');
       console.log('The start guy is bigger than the end guy');
       return;
     }
@@ -225,7 +234,9 @@ const EventForm = (props: EventFormProps) => {
       },
       calendarId,
     };
+
     const res = await axios.post(`/api/${calendarId}/postEvent`, body);
+    toast('Sent ;)');
     console.log('this is the res from the onclick button', res);
     await fetchData(calendarId);
   };

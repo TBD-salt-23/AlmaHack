@@ -39,26 +39,26 @@ const getNextWeekFromGoogle = async (
       }
     );
 
-      const primaryCalendar = calendarResponse.data.items
-        .filter((calendar: GoogleCalendar) => {
-          return calendar.primary;
-        })
-        .map((calendar: GoogleCalendar) => ({
-          id: calendar.id,
-          summary: `${calendar.summary} (Primary)`,
-        }));
-      const ownedCalendars = calendarResponse.data.items
-        .filter(
-          (calendar: GoogleCalendar) =>
-            (calendar.accessRole === 'owner' ||
-              calendar.accessRole === 'writer') &&
-            !calendar.primary
-        )
-        .map((calendar: GoogleCalendar) => ({
-          id: calendar.id,
-          summary: calendar.summary,
-        }));
-      const calendarList = [...primaryCalendar, ...ownedCalendars];
+    const primaryCalendar = calendarResponse.data.items
+      .filter((calendar: GoogleCalendar) => {
+        return calendar.primary;
+      })
+      .map((calendar: GoogleCalendar) => ({
+        id: calendar.id,
+        summary: `${calendar.summary} (Primary)`,
+      }));
+    const ownedCalendars = calendarResponse.data.items
+      .filter(
+        (calendar: GoogleCalendar) =>
+          (calendar.accessRole === 'owner' ||
+            calendar.accessRole === 'writer') &&
+          !calendar.primary
+      )
+      .map((calendar: GoogleCalendar) => ({
+        id: calendar.id,
+        summary: calendar.summary,
+      }));
+    const calendarList = [...primaryCalendar, ...ownedCalendars];
     console.log('calendar list', calendarList);
 
     //
@@ -72,7 +72,8 @@ const getNextWeekFromGoogle = async (
       'this is the error from within the axios get',
       (error as Error).message
     );
-    throw new Error((error as Error).message);
+    if ((error as Error).message === 'Request failed with status code 401')
+      throw new Error('Error 401! Try signing out and back in :)');
   }
 };
 
@@ -95,7 +96,7 @@ export default async function handler(
       );
       return res.json({ eventList, calendarList });
     } catch (error) {
-      return res.json((error as Error).message);
+      throw new Error((error as Error).message);
     }
   }
 

@@ -3,6 +3,9 @@ import Layout from '../components/layout';
 import EventForm from '../components/EventForm';
 import { useState, useEffect } from 'react';
 import { CalendarResponse } from '../utils/types';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function IndexPage() {
   const [calendarData, setCalendarData] = useState<CalendarResponse>({
@@ -11,15 +14,14 @@ export default function IndexPage() {
   });
   const [calendarToRender, setCalendarToRender] = useState('primary');
   const fetchCalendarData = async (calendarId: string = 'primary') => {
-    const res = await fetch(`/api/${calendarId}/events`);
+    try {
+      const res = await fetch(`/api/${calendarId}/events`);
+      const calendarResponse = await res.json();
 
-    const calendarResponse = await res.json();
-
-    if ('error' in calendarResponse) {
-      console.log('there was an error', calendarResponse.error);
-      return;
+      setCalendarData(calendarResponse);
+    } catch (error) {
+      toast.error((error as Error).message);
     }
-    setCalendarData(calendarResponse);
   };
   useEffect(() => {
     fetchCalendarData(calendarToRender);
@@ -37,6 +39,7 @@ export default function IndexPage() {
       <section className="upcoming__section">
         <Calendar content={calendarData.eventList} />
       </section>
+      <ToastContainer />
     </Layout>
   );
 }
