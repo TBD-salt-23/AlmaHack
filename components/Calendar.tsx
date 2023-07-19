@@ -3,6 +3,7 @@ import AccessDenied from './access-denied';
 import { ApiEvent } from '../utils/types';
 import { v4 as uuid } from 'uuid';
 import { parseTimeNicely, parseAllDayEvents } from '../utils/helpers';
+import { ONE_DAY } from '../utils/consts';
 
 type CalendarProps = {
   content: ApiEvent[];
@@ -25,22 +26,17 @@ const renderEvents = (event: ApiEvent) => {
     );
   }
 
-  const startDate = event.start.date;
-  const endDate = event.end.date;
+  const convertedDateStart = new Date(event.start.date).getTime();
+  const convertedDateEnd = new Date(event.end.date).getTime();
 
-  if (startDate)
-    console.log('date', parseAllDayEvents(new Date(startDate).toString()));
-
-  const convertedDateStart = new Date(startDate).getTime();
-  const convertedDateEnd = new Date(endDate).getTime();
-  if (
-    event.start.date &&
-    convertedDateEnd - 24 * 60 * 60 * 1000 === convertedDateStart
-  ) {
+  if (convertedDateStart && convertedDateEnd - ONE_DAY === convertedDateStart) {
     return (
       <li key={uuid()} className="event__list-item">
         <h3 className="event__list__heading">{event.summary}</h3>
-        <p>{parseAllDayEvents(new Date(event.start.date).toString())}</p>
+        <p>
+          {parseAllDayEvents(new Date(event.start.date).toString())} (One-day
+          event)
+        </p>
       </li>
     );
   }
@@ -49,7 +45,8 @@ const renderEvents = (event: ApiEvent) => {
     <li key={uuid()} className="event__list-item">
       <h3 className="event__list__heading">{event.summary}</h3>
       <p>
-        {event.start.date} - {event.end.date}
+        {parseAllDayEvents(new Date(convertedDateStart).toString())} -{' '}
+        {parseAllDayEvents(new Date(convertedDateEnd - ONE_DAY).toString())}
       </p>
     </li>
   );

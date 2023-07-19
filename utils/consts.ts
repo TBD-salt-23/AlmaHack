@@ -8,3 +8,5 @@ export const DAYS_OF_WEEK = {
   5: 'Friday',
   6: 'Saturday',
 };
+
+export const ONE_DAY = 1000 * 60 * 60 * 24;
