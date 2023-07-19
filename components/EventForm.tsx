@@ -7,6 +7,8 @@ import {
   generateAppropriateTime,
   shuffle,
 } from '../utils/helpers';
+import { CalendarResponse } from '../utils/types';
+import { v4 as uuid } from 'uuid';
 
 //TODO: IMPLEMENT TOASTIFY FOR ERROR HANDLING
 
@@ -52,7 +54,7 @@ const filterInappropriateTimes = (
           );
           console.log(
             'this is after the slice',
-            possibleTimeSlot.map(quarter => {
+            possibleTimeSlot.map((quarter) => {
               return (
                 new Date(quarter).getHours().toString() +
                 new Date(quarter).getMinutes().toString()
@@ -87,7 +89,7 @@ const filterInappropriateTimes = (
     if (timeSlotIterator === possibleTimes.length - 1) {
       console.log(
         'on the final loop, free quarters looks like',
-        freeQuarters.map(quarter => {
+        freeQuarters.map((quarter) => {
           return (
             new Date(quarter).getHours().toString() +
             new Date(quarter).getMinutes().toString()
@@ -98,8 +100,8 @@ const filterInappropriateTimes = (
         unoccupiedSlots.push(freeQuarters);
         console.log(
           `free quarters (${freeQuarters.length}) is now equivalent to the length of the duration in quarters (${quartersInDuration}), adding to unoccupied slots`,
-          unoccupiedSlots.map(slot => {
-            return slot.map(quarter => {
+          unoccupiedSlots.map((slot) => {
+            return slot.map((quarter) => {
               return (
                 new Date(quarter).getHours().toString() +
                 new Date(quarter).getMinutes().toString()
@@ -129,8 +131,8 @@ const filterInappropriateTimes = (
 };
 
 type EventFormProps = {
-  fetchData: () => Promise<void>;
-  content: ApiEvent[];
+  fetchData: (calendarId: string) => Promise<void>;
+  content: CalendarResponse;
 };
 
 type Slot = {
@@ -139,7 +141,7 @@ type Slot = {
 };
 
 const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
-  return content.map(event => {
+  return content.map((event) => {
     return {
       start: new Date(event.start.dateTime).getTime(),
       end: new Date(event.end.dateTime).getTime(),
@@ -149,16 +151,18 @@ const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
 
 const EventForm = (props: EventFormProps) => {
   const { fetchData, content } = props;
+  const { eventList, calendarList } = content;
   const eventTitle = useRef<HTMLInputElement>(null);
   const eventDuration = useRef<HTMLInputElement>(null);
-  const eventSelectStart = useRef<HTMLInputElement>(null);
-  const eventSelectEnd = useRef<HTMLInputElement>(null);
+  const eventTimeStart = useRef<HTMLInputElement>(null);
+  const eventTimeEnd = useRef<HTMLInputElement>(null);
+  const eventSelectCalendar = useRef<HTMLSelectElement>(null);
 
-  const occupiedSlots = getOccupiedSlots(content);
+  const occupiedSlots = getOccupiedSlots(eventList);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const startWindow = eventSelectStart.current?.value;
-    const endWindow = eventSelectEnd.current?.value;
+    const startWindow = eventTimeStart.current?.value;
+    const endWindow = eventTimeEnd.current?.value;
     const duration = eventDuration.current?.value;
     const title = eventTitle.current?.value;
     if (!endWindow || !startWindow || !duration || !title) {
@@ -182,8 +186,8 @@ const EventForm = (props: EventFormProps) => {
     );
     console.log(
       'these times are considered unoccupied',
-      unoccupiedSlots.map(slot => {
-        return slot.map(quarter => {
+      unoccupiedSlots.map((slot) => {
+        return slot.map((quarter) => {
           return (
             new Date(quarter).getHours().toString() +
             new Date(quarter).getMinutes().toString()
@@ -197,6 +201,7 @@ const EventForm = (props: EventFormProps) => {
 
     // const [[startTime]] = shuffle(shuffle(unoccupiedSlots));
     const endTime = startTime + durationMiliseconds;
+    const calendarId = eventSelectCalendar.current?.value || 'primary';
 
     const body = {
       googleEvent: {
@@ -212,11 +217,11 @@ const EventForm = (props: EventFormProps) => {
           eventTitle.current?.value ||
           'You should have provided a title you numbskull',
       },
-      calendarId: 'primary',
+      calendarId,
     };
-    const res = await axios.post(`/api/calendar/postEvent`, body);
+    const res = await axios.post(`/api/${calendarId}/postEvent`, body);
     console.log('this is the res from the onclick button', res);
-    await fetchData();
+    await fetchData(calendarId);
   };
 
   return (
@@ -245,7 +250,7 @@ const EventForm = (props: EventFormProps) => {
         {/* TODO: Add unset to these guys */}
         <input
           type="time"
-          ref={eventSelectStart}
+          ref={eventTimeStart}
           min={'00:00'}
           max={'23:59'}
           step={900}
@@ -254,12 +259,24 @@ const EventForm = (props: EventFormProps) => {
         <span> - </span>
         <input
           type="time"
-          ref={eventSelectEnd}
+          ref={eventTimeEnd}
           min={'00:00'}
           max={'23:59'}
           step={900}
           required
         ></input>
+      </div>
+      <label htmlFor="calendarSelect">Calendar</label>
+      <div>
+        <select name="" id="calendarSelect" ref={eventSelectCalendar}>
+          {calendarList.map((calendar) => {
+            return (
+              <option key={uuid()} value={calendar.id}>
+                {calendar.summary}
+              </option>
+            );
+          })}
+        </select>
       </div>
       <button>Submit</button>
     </form>

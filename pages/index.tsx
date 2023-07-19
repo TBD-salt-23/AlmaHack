@@ -1,32 +1,36 @@
 import Calendar from '../components/Calendar';
 import Layout from '../components/layout';
 import EventForm from '../components/EventForm';
-import { ApiEvent } from '../utils/types';
 import { useState, useEffect } from 'react';
+import { CalendarResponse } from '../utils/types';
 
 export default function IndexPage() {
-  const [content, setContent] = useState<ApiEvent[]>([]);
-  const fetchData = async () => {
-    const res = await fetch('/api/calendar/events');
-    const json = await res.json();
-    if (json.content) {
-      if ('error' in json.content) {
-        console.log('there was an error', json.content.error);
-        return;
-      }
-      setContent(json.content);
+  const [calendarData, setCalendarData] = useState<CalendarResponse>({
+    calendarList: [],
+    eventList: [],
+  });
+  const fetchCalendarData = async (calendarId: string = 'primary') => {
+    // const res = await fetch('/api/calendar/events');
+    const res = await fetch(`/api/${calendarId}/events`);
+
+    const calendarResponse = await res.json();
+
+    if ('error' in calendarResponse) {
+      console.log('there was an error', calendarResponse.error);
+      return;
     }
+    setCalendarData(calendarResponse);
   };
   useEffect(() => {
-    fetchData();
+    fetchCalendarData();
   }, []);
   console.log('EVERYTHING IS RE-RENDERED!!!');
 
   return (
     <Layout>
-      <EventForm fetchData={fetchData} content={content} />
+      <EventForm fetchData={fetchCalendarData} content={calendarData} />
       <section className="upcoming__section">
-        <Calendar content={content} />
+        <Calendar content={calendarData.eventList} />
       </section>
     </Layout>
   );

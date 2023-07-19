@@ -30,7 +30,7 @@ export const hoursToMiliseconds = (hours: number) => {
 export const parseAllDayEvents = (time: string) =>
   `${DAYS_OF_WEEK[new Date(time).getDay() as keyof typeof DAYS_OF_WEEK]} ${
     new Date(time).getMonth() + 1
-  }/${new Date(time).getDate()}`;
+  }/${new Date(time).getDate()} (All day)`;
 
 
 export function shuffle(array: any[]) {

@@ -37,6 +37,11 @@ export type GoogleEventPost = {
   summary: string;
 };
 
+export type CalendarResponse = {
+  calendarList: GoogleCalendar[];
+  eventList: ApiEvent[];
+};
+
 export type Token = {
   name: 'Hugo Dahlgren';
   email: 'karlhugodahlgren@gmail.com';
@@ -48,4 +53,21 @@ export type Token = {
   iat: 1689669206;
   exp: 1692261206;
   jti: '93bdfc20-1a44-448c-b86a-9ed0eda6a79b';
+};
+
+export type GoogleCalendar = {
+  kind: 'calendar#calendarListEntry';
+  etag: '"1662299852475000"';
+  id: 'diana.borro@appliedtechnology.se';
+  summary: 'diana.borro@appliedtechnology.se';
+  timeZone: 'Europe/Berlin';
+  colorId: '14';
+  backgroundColor: '#9fe1e7';
+  foregroundColor: '#000000';
+  selected: true;
+  accessRole: 'owner';
+  defaultReminders: [[Object]];
+  notificationSettings: { notifications: [] };
+  primary: true;
+  conferenceProperties: { allowedConferenceSolutionTypes: [] };
 };

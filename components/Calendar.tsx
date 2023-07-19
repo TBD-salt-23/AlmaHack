@@ -33,10 +33,7 @@ const renderEvents = (event: ApiEvent) => {
     return (
       <li key={uuid()} className="event__list-item">
         <h3 className="event__list__heading">{event.summary}</h3>
-        <p>
-          {parseAllDayEvents(new Date(event.start.date).toString())} (One-day
-          event)
-        </p>
+        <p>{parseAllDayEvents(new Date(event.start.date).toString())}</p>
       </li>
     );
   }
@@ -46,7 +43,7 @@ const renderEvents = (event: ApiEvent) => {
       <h3 className="event__list__heading">{event.summary}</h3>
       <p>
         {parseAllDayEvents(new Date(convertedDateStart).toString())} -{' '}
-        {parseAllDayEvents(new Date(convertedDateEnd - ONE_DAY).toString())}
+        {parseAllDayEvents(new Date(convertedDateEnd - ONE_DAY).toString())}{' '}
       </p>
     </li>
   );
