@@ -11,7 +11,7 @@ type CalendarProps = {
 
 const renderEvents = (event: ApiEvent) => {
   {
-    /* The guy below used to be ?? */
+    /* The guy below used to be ??, as in null coalescing */
   }
 
   if (event.start.dateTime) {
