@@ -30,12 +30,15 @@ export default async function handler(
 ) {
   const session = await getServerSession(req, res, authOptions);
   const body = req.body;
-
+  const { calendarId } = req.query;
   if (session) {
     try {
       const token = (await getToken({ req })) as any;
       accessToken = token?.accessToken;
-      const data = await addNewEvent(body.googleEvent, 'primary');
+      const data = await addNewEvent(
+        body.googleEvent,
+        calendarId?.toString() || 'primary'
+      );
       console.log('this is the data from the post guy', data);
       return res.json({ content: data });
     } catch (error) {
