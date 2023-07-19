@@ -12,10 +12,14 @@ import {
 
 const filterInappropriateTimes = (
   occupiedSlots: Slot[],
-  possibleTimes: number[]
+  possibleTimes: number[],
+  durationMiliseconds: number
 ) => {
-  const unoccupiedSlots = [];
+  let unoccupiedSlots: number[][] = [];
   const confirmedOccupiedSlots = [];
+  const aQuarterMiliseconds = 1 * 15 * 60 * 1000;
+  const quartersInDuration = durationMiliseconds / aQuarterMiliseconds;
+  let freeQuarters = [];
 
   for (
     let timeSlotIterator = 0;
@@ -36,11 +40,28 @@ const filterInappropriateTimes = (
         currentPosValue <= currentOccValue.end
       ) {
         slotIsOccupied = true;
-        console.log(
-          'This slot is occupied',
-          new Date(currentOccValue.start).getHours(),
-          new Date(currentOccValue.start).getMinutes()
-        );
+        // console.log(
+        //   'This slot is occupied',
+        //   new Date(currentOccValue.start).getHours(),
+        //   new Date(currentOccValue.start).getMinutes()
+        // );
+        if (freeQuarters.length >= quartersInDuration) {
+          const possibleTimeSlot = freeQuarters.slice(
+            0,
+            quartersInDuration * -1
+          );
+          console.log(
+            'this is after the slice',
+            possibleTimeSlot.map(quarter => {
+              return (
+                new Date(quarter).getHours().toString() +
+                new Date(quarter).getMinutes().toString()
+              );
+            })
+          );
+          unoccupiedSlots.push(possibleTimeSlot);
+        }
+        freeQuarters = [];
         break;
       }
     }
@@ -48,7 +69,61 @@ const filterInappropriateTimes = (
       confirmedOccupiedSlots.push(currentPosValue);
       continue;
     }
-    unoccupiedSlots.push(currentPosValue);
+
+    //this is success
+    freeQuarters.push(currentPosValue);
+    // console.log(
+    //   'free quarters looks like this on what I consider a success',
+    //   freeQuarters
+    //     .map(slot => {
+    //       return (
+    //         new Date(slot).getHours().toString() +
+    //         new Date(slot).getMinutes().toString()
+    //       );
+    //     })
+    //     .join('\n')
+    // );
+
+    if (timeSlotIterator === possibleTimes.length - 1) {
+      console.log(
+        'on the final loop, free quarters looks like',
+        freeQuarters.map(quarter => {
+          return (
+            new Date(quarter).getHours().toString() +
+            new Date(quarter).getMinutes().toString()
+          );
+        })
+      );
+      if (freeQuarters.length) {
+        unoccupiedSlots.push(freeQuarters);
+        console.log(
+          `free quarters (${freeQuarters.length}) is now equivalent to the length of the duration in quarters (${quartersInDuration}), adding to unoccupied slots`,
+          unoccupiedSlots.map(slot => {
+            return slot.map(quarter => {
+              return (
+                new Date(quarter).getHours().toString() +
+                new Date(quarter).getMinutes().toString()
+              );
+            });
+          })
+        );
+      }
+    }
+    // if (freeQuarters.length === quartersInDuration) { THIS CODE WORKS BUT RANDOMNESS SUFFERS
+    //   unoccupiedSlots = [...unoccupiedSlots, freeQuarters];
+    //   console.log(
+    //     `free quarters (${freeQuarters.length}) is now equivalent to the length of the duration in quarters (${quartersInDuration}), adding to unoccupied slots`,
+    //     unoccupiedSlots.map(slot => {
+    //       return slot.map(quarter => {
+    //         return (
+    //           new Date(quarter).getHours().toString() +
+    //           new Date(quarter).getMinutes().toString()
+    //         );
+    //       });
+    //     })
+    //   );
+    //   freeQuarters = [];
+    // }
   }
   return unoccupiedSlots;
 };
@@ -102,20 +177,25 @@ const EventForm = (props: EventFormProps) => {
     );
     const unoccupiedSlots = filterInappropriateTimes(
       occupiedSlots,
-      possibleTimes
+      possibleTimes,
+      durationMiliseconds
     );
     console.log(
       'these times are considered unoccupied',
-      unoccupiedSlots
-        .map(slot => {
+      unoccupiedSlots.map(slot => {
+        return slot.map(quarter => {
           return (
-            new Date(slot).getHours().toString() +
-            new Date(slot).getMinutes().toString()
+            new Date(quarter).getHours().toString() +
+            new Date(quarter).getMinutes().toString()
           );
-        })
-        .join('\n')
+        });
+      })
     );
-    const [startTime] = shuffle(unoccupiedSlots);
+    if (!unoccupiedSlots.length) return;
+    const [possibleQuarters] = shuffle(unoccupiedSlots);
+    const [startTime] = shuffle(possibleQuarters);
+
+    // const [[startTime]] = shuffle(shuffle(unoccupiedSlots));
     const endTime = startTime + durationMiliseconds;
 
     const body = {
