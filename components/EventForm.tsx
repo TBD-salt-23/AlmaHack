@@ -133,6 +133,8 @@ const filterInappropriateTimes = (
 type EventFormProps = {
   fetchData: (calendarId: string) => Promise<void>;
   content: CalendarResponse;
+  setCalendarToRender: (calendarToRender: string) => void;
+  calendarToRender: string;
 };
 
 type Slot = {
@@ -150,7 +152,7 @@ const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
 };
 
 const EventForm = (props: EventFormProps) => {
-  const { fetchData, content } = props;
+  const { fetchData, content, setCalendarToRender, calendarToRender } = props;
   const { eventList, calendarList } = content;
   const eventTitle = useRef<HTMLInputElement>(null);
   const eventDuration = useRef<HTMLInputElement>(null);
@@ -202,6 +204,10 @@ const EventForm = (props: EventFormProps) => {
     // const [[startTime]] = shuffle(shuffle(unoccupiedSlots));
     const endTime = startTime + durationMiliseconds;
     const calendarId = eventSelectCalendar.current?.value || 'primary';
+    console.log(
+      'Hello this is the calendarId in the post thing, line 207',
+      calendarId
+    );
 
     const body = {
       googleEvent: {
@@ -268,7 +274,16 @@ const EventForm = (props: EventFormProps) => {
       </div>
       <label htmlFor="calendarSelect">Calendar</label>
       <div>
-        <select name="" id="calendarSelect" ref={eventSelectCalendar}>
+        <select
+          name=""
+          id="calendarSelect"
+          ref={eventSelectCalendar}
+          value={calendarToRender}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            if (!e.target.value) return;
+            setCalendarToRender(e.target.value);
+          }}
+        >
           {calendarList.map((calendar) => {
             return (
               <option key={uuid()} value={calendar.id}>

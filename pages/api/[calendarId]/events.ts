@@ -39,15 +39,26 @@ const getNextWeekFromGoogle = async (
       }
     );
 
-    const calendarList = calendarResponse.data.items
-      .filter(
-        (calendar: GoogleCalendar) =>
-          calendar.accessRole === 'owner' || calendar.accessRole === 'writer'
-      )
-      .map((calendar: GoogleCalendar) => ({
-        id: calendar.id,
-        summary: calendar.summary,
-      }));
+      const primaryCalendar = calendarResponse.data.items
+        .filter((calendar: GoogleCalendar) => {
+          return calendar.primary;
+        })
+        .map((calendar: GoogleCalendar) => ({
+          id: calendar.id,
+          summary: `${calendar.summary} (Primary)`,
+        }));
+      const ownedCalendars = calendarResponse.data.items
+        .filter(
+          (calendar: GoogleCalendar) =>
+            (calendar.accessRole === 'owner' ||
+              calendar.accessRole === 'writer') &&
+            !calendar.primary
+        )
+        .map((calendar: GoogleCalendar) => ({
+          id: calendar.id,
+          summary: calendar.summary,
+        }));
+      const calendarList = [...primaryCalendar, ...ownedCalendars];
     console.log('calendar list', calendarList);
 
     //

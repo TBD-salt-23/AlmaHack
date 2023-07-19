@@ -9,8 +9,8 @@ export default function IndexPage() {
     calendarList: [],
     eventList: [],
   });
+  const [calendarToRender, setCalendarToRender] = useState('primary');
   const fetchCalendarData = async (calendarId: string = 'primary') => {
-    // const res = await fetch('/api/calendar/events');
     const res = await fetch(`/api/${calendarId}/events`);
 
     const calendarResponse = await res.json();
@@ -22,13 +22,18 @@ export default function IndexPage() {
     setCalendarData(calendarResponse);
   };
   useEffect(() => {
-    fetchCalendarData();
-  }, []);
+    fetchCalendarData(calendarToRender);
+  }, [calendarToRender]);
   console.log('EVERYTHING IS RE-RENDERED!!!');
 
   return (
     <Layout>
-      <EventForm fetchData={fetchCalendarData} content={calendarData} />
+      <EventForm
+        fetchData={fetchCalendarData}
+        content={calendarData}
+        calendarToRender={calendarToRender}
+        setCalendarToRender={setCalendarToRender}
+      />
       <section className="upcoming__section">
         <Calendar content={calendarData.eventList} />
       </section>
