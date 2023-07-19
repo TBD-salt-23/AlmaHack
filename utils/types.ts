@@ -1,7 +1,11 @@
 export type ApiEvent = {
   created: '2023-07-18T06:35:13.000Z';
   creator: { email: 'karlhugodahlgren@gmail.com'; self: true };
-  end: { dateTime: '2023-07-24T10:00:00+02:00'; timeZone: 'Europe/Stockholm' };
+  end: {
+    date: string;
+    dateTime: '2023-07-24T10:00:00+02:00';
+    timeZone: 'Europe/Stockholm';
+  };
   etag: '"3379324306825000"';
   eventType: 'default';
   htmlLink: 'https://www.google.com/calendar/event?eid=Xzg4b2pnY2k1NmtzamdiOWs3NHFrY2I5azZjcWowYmEyNnQyazJiOWg2dDI0NGNxNDY0cDM0aGk1NmMga2FybGh1Z29kYWhsZ3JlbkBt';
@@ -12,6 +16,7 @@ export type ApiEvent = {
   reminders: { useDefault: false };
   sequence: 1;
   start: {
+    date: string;
     dateTime: '2023-07-24T09:00:00+02:00';
     timeZone: 'Europe/Stockholm';
   };
@@ -21,6 +26,7 @@ export type ApiEvent = {
 };
 
 export type GoogleTime = {
+  date?: Date;
   dateTime?: Date;
   timeZone?: string;
 };

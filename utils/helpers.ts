@@ -27,6 +27,12 @@ export const hoursToMiliseconds = (hours: number) => {
   return hours * 60 * 60 * 1000;
 };
 
+export const parseAllDayEvents = (time: string) => 
+  `${DAYS_OF_WEEK[new Date(time).getDay() as keyof typeof DAYS_OF_WEEK]} ${
+    new Date(time).getMonth() + 1
+  }/${new Date(time).getDate()} (One-day event)`;
+;
+
 export function shuffle(array: any[]) {
   const arrayCopy = [...array];
 

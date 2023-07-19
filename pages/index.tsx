@@ -18,9 +18,9 @@ export default function IndexPage() {
     }
   };
   useEffect(() => {
-    console.log('EVERYTHING IS RE-RENDERED!!!');
     fetchData();
   }, []);
+  console.log('EVERYTHING IS RE-RENDERED!!!');
 
   return (
     <Layout>
