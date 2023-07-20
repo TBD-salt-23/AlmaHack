@@ -4,6 +4,7 @@ import { ApiEvent } from '../utils/types';
 import { v4 as uuid } from 'uuid';
 import { parseTimeNicely, parseAllDayEvents } from '../utils/helpers';
 import { ONE_DAY } from '../utils/consts';
+import styles from './styles/Calendar.module.css';
 
 type CalendarProps = {
   content: ApiEvent[];
@@ -16,8 +17,8 @@ const renderEvents = (event: ApiEvent) => {
 
   if (event.start.dateTime) {
     return (
-      <li key={uuid()} className="event__list-item">
-        <h3 className="event__list__heading">{event.summary}</h3>
+      <li key={uuid()} className={styles['event__list-item']}>
+        <h3 className={styles.event__list__heading}>{event.summary}</h3>
         <p>
           {parseTimeNicely(event.start.dateTime)} -{' '}
           {parseTimeNicely(event.end.dateTime)}
@@ -31,16 +32,16 @@ const renderEvents = (event: ApiEvent) => {
 
   if (convertedDateStart && convertedDateEnd - ONE_DAY === convertedDateStart) {
     return (
-      <li key={uuid()} className="event__list-item">
-        <h3 className="event__list__heading">{event.summary}</h3>
+      <li key={uuid()} className={styles['event__list-item']}>
+        <h3 className={styles.event__list__heading}>{event.summary}</h3>
         <p>{parseAllDayEvents(new Date(event.start.date).toString())}</p>
       </li>
     );
   }
 
   return (
-    <li key={uuid()} className="event__list-item">
-      <h3 className="event__list__heading">{event.summary}</h3>
+    <li key={uuid()} className={styles['event__list-item']}>
+      <h3 className={styles.event__list__heading}>{event.summary}</h3>
       <p>
         {parseAllDayEvents(new Date(convertedDateStart).toString())} -{' '}
         {parseAllDayEvents(new Date(convertedDateEnd - ONE_DAY).toString())}{' '}
@@ -56,6 +57,15 @@ export default function Calendar(props: CalendarProps) {
 
   if (!session) {
     return <AccessDenied />;
+  }
+
+  if (!content.length) {
+    return (
+      <>
+        <h1>Events next week</h1>
+        <p>'No upcoming events'</p>
+      </>
+    );
   }
 
   return (

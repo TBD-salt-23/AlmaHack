@@ -1,4 +1,4 @@
-import { Slot } from '../../utils/types';
+import { Slot } from '../../../utils/types';
 
 export const filterInappropriateTimes = (
   occupiedSlots: Slot[],

@@ -17,19 +17,6 @@ const getNextWeekFromGoogle = async (
   try {
     const [currentDate, nextWeekStart, nextWeekEnd] = weekBoundaries();
 
-    const eventResponse = await axios.get(`${BASE_URL}/${calendarId}/events`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        timeMin: nextWeekStart.toISOString(),
-        timeMax: nextWeekEnd.toISOString(),
-        orderBy: 'startTime',
-        singleEvents: true,
-      },
-    });
-
-    const eventList = eventResponse.data.items;
     const calendarResponse = await axios.get(
       'https://www.googleapis.com/calendar/v3/users/me/calendarList',
       {
@@ -61,6 +48,18 @@ const getNextWeekFromGoogle = async (
     const calendarList = [...primaryCalendar, ...ownedCalendars];
     console.log('calendar list', calendarList);
 
+    const eventResponse = await axios.get(`${BASE_URL}/${calendarId}/events`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        timeMin: nextWeekStart.toISOString(),
+        timeMax: nextWeekEnd.toISOString(),
+        orderBy: 'startTime',
+        singleEvents: true,
+      },
+    });
+    const eventList = eventResponse.data.items;
     //
     // if (data?.nextPageToken) {
     //   return data.items.concat(await getNextWeekFromGoogle(data.nextPageToken));
@@ -73,7 +72,9 @@ const getNextWeekFromGoogle = async (
       (error as Error).message
     );
     if ((error as Error).message === 'Request failed with status code 401')
-      throw new Error('Error 401! Try signing out and back in :)');
+      console.log('We are in the error conditional');
+    // return { error: 'Error 401! Try signing out and back in :)' };
+    throw new Error('Error 401! Try signing out and back in :)');
   }
 };
 

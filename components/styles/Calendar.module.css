@@ -1,0 +1,8 @@
+.event__list-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+.event__list__heading {
+  width: 25%;
+}
