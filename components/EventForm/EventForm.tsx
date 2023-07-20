@@ -55,7 +55,7 @@ const EventForm = (props: EventFormProps) => {
     return <AccessDenied />;
   }
   if (!content.calendarList.length) {
-    return 'Loading...';
+    return <p>Loading....</p>;
   }
 
   const occupiedSlots = getOccupiedSlots(eventList);
