@@ -1,22 +1,23 @@
-import React, { useEffect } from 'react';
-import { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import axios from 'axios';
-import { ApiEvent } from '../../utils/types';
 import {
   hoursToMiliseconds,
   generateAppropriateTime as parseTimeSlotWindowAsUnix,
   shuffle,
 } from '../../utils/helpers';
-import { CalendarResponse } from '../../utils/types';
+import { CalendarResponse, EventInput } from '../../utils/types';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
 import AccessDenied from '../access-denied';
-import { filterInappropriateTimes as filterOccupiedSlots } from './helpers/EventFormHelpers';
-import { Slot } from '../../utils/types';
-import NewEventInfo from './NewEventInfo';
+import {
+  filterOccupiedSlots,
+  getOccupiedSlots,
+  parseEventsToAdd,
+  returnNewEventInfo,
+  handleSelect,
+} from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
-import { useState } from 'react';
 
 //TODO: IMPLEMENT TOASTIFY FOR ERROR HANDLING
 
@@ -25,15 +26,6 @@ type EventFormProps = {
   content: CalendarResponse;
   setCalendarToRender: (calendarToRender: string) => void;
   calendarToRender: string;
-};
-
-const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
-  return content.map(event => {
-    return {
-      start: new Date(event.start.dateTime).getTime(),
-      end: new Date(event.end.dateTime).getTime(),
-    };
-  });
 };
 
 const EventForm = (props: EventFormProps) => {
@@ -46,26 +38,7 @@ const EventForm = (props: EventFormProps) => {
   const eventSelectCalendar = useRef<HTMLSelectElement>(null);
   const titleArr = useRef<HTMLInputElement[]>([]);
   const durationArr = useRef<HTMLInputElement[]>([]);
-
-  const returnNewEventInfo = (titleArr: any, durationArr: any) => {
-    const arrayToReturn = [];
-    console.log('this is the titleArr', titleArr.current);
-    for (let i = 0; i < inputsToDisplay; i++) {
-      console.log('we are inside the loop having fun', i);
-      arrayToReturn.push(
-        <NewEventInfo
-          titleRef={(el: HTMLInputElement) => (titleArr.current[i] = el)}
-          durationRef={(el: HTMLInputElement) => (durationArr.current[i] = el)}
-          key={uuid()}
-        />
-      );
-    }
-    console.log(
-      'before returning, arraytoreturn looks like this',
-      arrayToReturn
-    );
-    return arrayToReturn;
-  };
+  const descriptionArr = useRef<HTMLInputElement[]>([]);
 
   // useEffect(() => {
   //   // titleArr.current = titleArr.current.slice(0, inputsToDisplay);
@@ -89,105 +62,74 @@ const EventForm = (props: EventFormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    type EventInput = {
-      startWindow: string;
-      endWindow: string;
-      duration: string;
-      title: string;
-    };
-    const configArr: EventInput[] = [];
+    const eventsToAdd = parseEventsToAdd(
+      inputsToDisplay,
+      eventTimeStart,
+      eventTimeEnd,
+      durationArr,
+      titleArr,
+      descriptionArr
+    );
 
-    for (let i = 0; i < inputsToDisplay; i++) {
-      const startWindow = eventTimeStart.current?.value || ''; //TODO: CONSIDER THIS
-      const endWindow = eventTimeEnd.current?.value || '';
-      const duration = durationArr.current[i].value;
-      const title = titleArr.current[i].value;
-      configArr.push({ startWindow, endWindow, duration, title });
-    }
-
-    // const configArr = inputsArray.map((_, i) => {
-    //   const startWindow = eventTimeStart.current?.value;
-    //   const endWindow = eventTimeEnd.current?.value;
-    //   const duration = durationArr.current[i].value;
-    //   const title = titleArr.current[i].value;
-    //   return { startWindow, endWindow, duration, title };
-    // });
-
-    configArr.forEach(async ({ startWindow, endWindow, duration, title }) => {
-      if (!endWindow || !startWindow || !duration || !title) {
-        toast.error('Please fill our all the required fields :)');
-        return;
-      }
-      if (startWindow >= endWindow) {
-        toast.error('Start time must be earlier than end time');
-        return;
-      }
-      const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
-      const windowAsUnix = parseTimeSlotWindowAsUnix(
-        startWindow,
-        endWindow,
-        durationMiliseconds
-      );
-      const unoccupiedSlots = filterOccupiedSlots(
-        occupiedSlots,
-        windowAsUnix,
-        durationMiliseconds
-      );
-      console.log(
-        'these times are considered unoccupied',
-        unoccupiedSlots.map(slot => {
-          return slot.map(quarter => {
-            return (
-              new Date(quarter).getHours().toString() +
-              new Date(quarter).getMinutes().toString()
-            );
-          });
-        })
-      );
-      if (!unoccupiedSlots.length) {
-        toast.warn("Couldn't find time slot for " + title);
-        return;
-      }
-
-      const [possibleQuarters] = shuffle(unoccupiedSlots);
-      const [startTime] = shuffle(possibleQuarters);
-      if (!startTime) {
-        toast.warn("Couldn't find time for " + title);
-        console.log('this is start time', startTime);
-        return;
-      }
-      const endTime = startTime + durationMiliseconds;
-      const calendarId = eventSelectCalendar.current?.value || 'primary';
-
-      const body = {
-        googleEvent: {
-          start: {
-            dateTime: new Date(startTime),
-            // timeZone: 'Europe/Stockholm',
+    eventsToAdd.forEach(
+      async ({ startWindow, endWindow, duration, title, description }) => {
+        if (!endWindow || !startWindow || !duration || !title) {
+          toast.error('Please fill our all the required fields :)');
+          return;
+        }
+        if (startWindow >= endWindow) {
+          toast.error('Start time must be earlier than end time');
+          return;
+        }
+        const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
+        const windowAsUnix = parseTimeSlotWindowAsUnix(
+          startWindow,
+          endWindow,
+          durationMiliseconds
+        );
+        const unoccupiedSlots = filterOccupiedSlots(
+          occupiedSlots,
+          windowAsUnix,
+          durationMiliseconds
+        );
+        if (!unoccupiedSlots.length) {
+          toast.warn("Couldn't find time slot for " + title);
+          return;
+        }
+        const [possibleQuarters] = shuffle(unoccupiedSlots);
+        const [startTime] = shuffle(possibleQuarters);
+        if (!startTime) {
+          toast.warn("Couldn't find time for " + title);
+          console.log('this is start time', startTime);
+          return;
+        }
+        const endTime = startTime + durationMiliseconds;
+        const calendarId = eventSelectCalendar.current?.value || 'primary';
+        const body = {
+          googleEvent: {
+            start: {
+              dateTime: new Date(startTime),
+              // timeZone: 'Europe/Stockholm',
+            },
+            end: {
+              dateTime: new Date(endTime),
+              // timeZone: 'Europe/Stockholm',
+            },
+            summary: title || 'You should have provided a title you numbskull',
+            description,
           },
-          end: {
-            dateTime: new Date(endTime),
-            // timeZone: 'Europe/Stockholm',
-          },
-          summary: title || 'You should have provided a title you numbskull',
-        },
-        calendarId,
-      };
-      occupiedSlots.push({
-        start: body.googleEvent.start.dateTime.getTime(),
-        end: body.googleEvent.end.dateTime.getTime(),
-      });
-      const res = await axios.post(`/api/${calendarId}/postEvent`, body);
-      toast.success('Sent ;)');
-      console.log('this is the res from the onclick button', res);
-      await fetchData(calendarId);
-    });
-  };
-
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (!e.target.value) return;
-    toast.info('Switching calendar!');
-    setCalendarToRender(e.target.value);
+          calendarId,
+        };
+        occupiedSlots.push({
+          start: body.googleEvent.start.dateTime.getTime(),
+          end: body.googleEvent.end.dateTime.getTime(),
+        });
+        const res = await axios.post(`/api/${calendarId}/postEvent`, body);
+        toast.success('Sent ;)');
+        console.log('this is the res from the onclick button', res);
+        await fetchData(calendarId);
+      }
+    );
   };
 
   return (
@@ -210,7 +152,6 @@ const EventForm = (props: EventFormProps) => {
       <form className={styles.event__form} onSubmit={handleSubmit}>
         <label>Time Slot</label>
         <div>
-          {/* TODO: Add unset to these guys */}
           <input
             type="time"
             ref={eventTimeStart}
@@ -236,7 +177,9 @@ const EventForm = (props: EventFormProps) => {
             id="calendarSelect"
             ref={eventSelectCalendar}
             value={calendarToRender}
-            onChange={handleSelect}
+            onChange={e => {
+              handleSelect(e, setCalendarToRender);
+            }}
           >
             {calendarList.map(calendar => {
               return (
@@ -247,7 +190,12 @@ const EventForm = (props: EventFormProps) => {
             })}
           </select>
         </div>
-        {returnNewEventInfo(titleArr, durationArr)}
+        {returnNewEventInfo(
+          titleArr,
+          durationArr,
+          descriptionArr,
+          inputsToDisplay
+        )}
         <button>Submit</button>
       </form>
     </section>

@@ -7,33 +7,42 @@ import { useRef } from 'react';
 // };
 
 export type NewEventInfoProps = {
-  titleRef: any;
-  durationRef: any;
+  titleRef: React.LegacyRef<HTMLInputElement>;
+  durationRef: React.LegacyRef<HTMLInputElement>;
+  descriptionRef: React.LegacyRef<HTMLInputElement>;
+  uuid: string;
 };
 const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
-  const { titleRef, durationRef } = props;
+  const { titleRef, durationRef, descriptionRef, uuid } = props;
 
   return (
     <>
       <div>
-        <label htmlFor="eventTitle">Task</label>
+        <label htmlFor={`eventTitle${uuid}`}>Task</label>
         <input
           ref={titleRef}
           type="text"
-          id="eventTitle"
+          id={`eventTitle${uuid}`}
           placeholder="Event summary..."
           required
         />
-        <label htmlFor="eventDuration">Duration</label>
+        <label htmlFor={`eventDuration${uuid}`}>Duration</label>
 
         <input
           ref={durationRef}
           type="number"
-          id="eventDuration"
+          id={`eventDuration${uuid}`}
           placeholder="Expected duration..."
           required
         />
         <span> Hours</span>
+        <label htmlFor={`eventDescription${uuid}`}>Description</label>
+        <input
+          ref={descriptionRef}
+          type="text"
+          id={`eventDescription${uuid}`}
+          placeholder="Notes..."
+        />
       </div>
     </>
   );

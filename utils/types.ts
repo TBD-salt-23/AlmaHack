@@ -1,6 +1,14 @@
+export type EventInput = {
+  startWindow: string;
+  endWindow: string;
+  duration: string;
+  title: string;
+};
+
 export type ApiEvent = {
+  description?: string;
   created: string;
-  creator: { email: string; self: boolean; };
+  creator: { email: string; self: boolean };
   end: {
     date: string;
     dateTime: string;
@@ -12,8 +20,8 @@ export type ApiEvent = {
   iCalUID: string;
   id: string;
   kind: string;
-  organizer: { email: string; self: boolean; };
-  reminders: { useDefault: boolean; };
+  organizer: { email: string; self: boolean };
+  reminders: { useDefault: boolean };
   sequence: number;
   start: {
     date: string;
@@ -67,9 +75,9 @@ export type GoogleCalendar = {
   selected: boolean;
   accessRole: string;
   defaultReminders: [[Object]];
-  notificationSettings: { notifications: []; };
+  notificationSettings: { notifications: [] };
   primary: boolean;
-  conferenceProperties: { allowedConferenceSolutionTypes: []; };
+  conferenceProperties: { allowedConferenceSolutionTypes: [] };
 };
 
 export type Slot = {

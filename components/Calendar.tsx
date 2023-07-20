@@ -18,7 +18,11 @@ const renderEvents = (event: ApiEvent) => {
   if (event.start.dateTime) {
     return (
       <li key={uuid()} className={styles['event__list-item']}>
-        <h3 className={styles.event__list__heading}>{event.summary}</h3>
+        <div>
+          <h3 className={styles.event__list__heading}>{event.summary}</h3>
+          <p>{event.description}</p>
+        </div>
+
         <p>
           {parseTimeNicely(event.start.dateTime)} -{' '}
           {parseTimeNicely(event.end.dateTime)}

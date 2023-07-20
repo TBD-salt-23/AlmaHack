@@ -1,6 +1,71 @@
-import { Slot } from '../../../utils/types';
+import { Slot, ApiEvent } from '../../../utils/types';
+import NewEventInfo from '../NewEventInfo';
+import { v4 as uuid } from 'uuid';
+import { toast } from 'react-toastify';
 
-export const filterInappropriateTimes = (
+export const handleSelect = (
+  e: React.ChangeEvent<HTMLSelectElement>,
+  setCalendarToRender: (value: string) => void
+) => {
+  if (!e.target.value) return;
+  toast.info('Switching calendar!');
+  setCalendarToRender(e.target.value);
+};
+
+export const parseEventsToAdd = (
+  inputsToDisplay: number,
+  eventTimeStart: React.RefObject<HTMLInputElement>,
+  eventTimeEnd: React.RefObject<HTMLInputElement>,
+  durationArr: React.MutableRefObject<HTMLInputElement[]>,
+  titleArr: React.MutableRefObject<HTMLInputElement[]>,
+  descriptionArr: React.MutableRefObject<HTMLInputElement[]>
+) => {
+  const eventsToAdd = [];
+  for (let i = 0; i < inputsToDisplay; i++) {
+    const startWindow = eventTimeStart.current?.value || ''; //TODO: CONSIDER THIS
+    const endWindow = eventTimeEnd.current?.value || '';
+    const duration = durationArr.current[i].value;
+    const title = titleArr.current[i].value;
+    const description = descriptionArr.current[i].value || '';
+    eventsToAdd.push({ startWindow, endWindow, duration, title, description });
+  }
+  return eventsToAdd;
+};
+
+export const returnNewEventInfo = (
+  titleArr: React.MutableRefObject<HTMLInputElement[]>,
+  durationArr: React.MutableRefObject<HTMLInputElement[]>,
+  descriptionArr: React.MutableRefObject<HTMLInputElement[]>,
+  inputsToDisplay: number
+) => {
+  const newEvents = [];
+  for (let i = 0; i < inputsToDisplay; i++) {
+    const identifier = uuid();
+    newEvents.push(
+      <NewEventInfo
+        titleRef={(el: HTMLInputElement) => (titleArr.current[i] = el)}
+        durationRef={(el: HTMLInputElement) => (durationArr.current[i] = el)}
+        descriptionRef={(el: HTMLInputElement) =>
+          (descriptionArr.current[i] = el)
+        }
+        uuid={identifier}
+        key={identifier}
+      />
+    );
+  }
+  return newEvents;
+};
+
+export const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
+  return content.map(event => {
+    return {
+      start: new Date(event.start.dateTime).getTime(),
+      end: new Date(event.end.dateTime).getTime(),
+    };
+  });
+};
+
+export const filterOccupiedSlots = (
   occupiedSlots: Slot[],
   possibleTimes: number[],
   durationMiliseconds: number
@@ -30,11 +95,6 @@ export const filterInappropriateTimes = (
         currentPosValue <= currentOccValue.end
       ) {
         slotIsOccupied = true;
-        // console.log(
-        //   'This slot is occupied',
-        //   new Date(currentOccValue.start).getHours(),
-        //   new Date(currentOccValue.start).getMinutes()
-        // );
         if (freeQuarters.length >= quartersInDuration) {
           const possibleTimeSlot = freeQuarters.slice(
             0,
@@ -52,7 +112,9 @@ export const filterInappropriateTimes = (
           unoccupiedSlots.push(possibleTimeSlot);
         }
         freeQuarters = [];
-        break;
+        // break; THIS GUY WAS RECENTLY COMMENTED OUT, IF THERE IS A BIG ISSUE
+        //WITH COLLISON I THINK ADD HIM BACK IN, BUT AS OF RIGHT NOW I DON'T
+        //UNDERSTAND HIS PURPOSE SINCE WE CONTINUE WHEN WE GET OUT OF HERE
       }
     }
     if (slotIsOccupied) {
@@ -60,20 +122,7 @@ export const filterInappropriateTimes = (
       continue;
     }
 
-    //this is success
     freeQuarters.push(currentPosValue);
-    // console.log(
-    //   'free quarters looks like this on what I consider a success',
-    //   freeQuarters
-    //     .map(slot => {
-    //       return (
-    //         new Date(slot).getHours().toString() +
-    //         new Date(slot).getMinutes().toString()
-    //       );
-    //     })
-    //     .join('\n')
-    // );
-
     if (timeSlotIterator === possibleTimes.length - 1) {
       console.log(
         'on the final loop, free quarters looks like',
@@ -99,21 +148,6 @@ export const filterInappropriateTimes = (
         );
       }
     }
-    // if (freeQuarters.length === quartersInDuration) { THIS CODE WORKS BUT RANDOMNESS SUFFERS
-    //   unoccupiedSlots = [...unoccupiedSlots, freeQuarters];
-    //   console.log(
-    //     `free quarters (${freeQuarters.length}) is now equivalent to the length of the duration in quarters (${quartersInDuration}), adding to unoccupied slots`,
-    //     unoccupiedSlots.map(slot => {
-    //       return slot.map(quarter => {
-    //         return (
-    //           new Date(quarter).getHours().toString() +
-    //           new Date(quarter).getMinutes().toString()
-    //         );
-    //       });
-    //     })
-    //   );
-    //   freeQuarters = [];
-    // }
   }
   return unoccupiedSlots;
 };
