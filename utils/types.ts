@@ -71,3 +71,8 @@ export type GoogleCalendar = {
   primary: true;
   conferenceProperties: { allowedConferenceSolutionTypes: [] };
 };
+
+export type Slot = {
+  start: number;
+  end: number;
+};
