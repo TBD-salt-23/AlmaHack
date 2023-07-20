@@ -16,10 +16,16 @@ export default function IndexPage() {
   const fetchCalendarData = async (calendarId: string = 'primary') => {
     try {
       const res = await fetch(`/api/${calendarId}/events`);
+      console.log('this is the res when there is an error', res);
+
       const calendarResponse = await res.json();
 
       setCalendarData(calendarResponse);
     } catch (error) {
+      console.log(
+        'this is the error we are putting in the toast',
+        (error as Error).message
+      );
       toast.error((error as Error).message);
     }
   };

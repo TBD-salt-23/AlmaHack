@@ -55,12 +55,11 @@ const EventForm = (props: EventFormProps) => {
     const duration = eventDuration.current?.value;
     const title = eventTitle.current?.value;
     if (!endWindow || !startWindow || !duration || !title) {
-      console.log('You didnt give me a value');
+      toast.error('Please fill our all the required fields :)');
       return;
     }
     if (startWindow >= endWindow) {
       toast.error('Start time must be earlier than end time');
-      console.log('The start guy is bigger than the end guy');
       return;
     }
     const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
@@ -88,14 +87,8 @@ const EventForm = (props: EventFormProps) => {
     if (!unoccupiedSlots.length) return;
     const [possibleQuarters] = shuffle(unoccupiedSlots);
     const [startTime] = shuffle(possibleQuarters);
-
-    // const [[startTime]] = shuffle(shuffle(unoccupiedSlots));
     const endTime = startTime + durationMiliseconds;
     const calendarId = eventSelectCalendar.current?.value || 'primary';
-    console.log(
-      'Hello this is the calendarId in the post thing, line 207',
-      calendarId
-    );
 
     const body = {
       googleEvent: {
@@ -115,9 +108,15 @@ const EventForm = (props: EventFormProps) => {
     };
 
     const res = await axios.post(`/api/${calendarId}/postEvent`, body);
-    toast('Sent ;)');
+    toast.success('Sent ;)');
     console.log('this is the res from the onclick button', res);
     await fetchData(calendarId);
+  };
+
+  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!e.target.value) return;
+    toast('Switching calendar!');
+    setCalendarToRender(e.target.value);
   };
 
   return (
@@ -169,10 +168,7 @@ const EventForm = (props: EventFormProps) => {
           id="calendarSelect"
           ref={eventSelectCalendar}
           value={calendarToRender}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            if (!e.target.value) return;
-            setCalendarToRender(e.target.value);
-          }}
+          onChange={handleSelect}
         >
           {calendarList.map(calendar => {
             return (
