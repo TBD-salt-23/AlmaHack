@@ -1,21 +1,19 @@
 {
   "private": true,
-  "description": "An example project for NextAuth.js with Next.js",
-  "repository": "https://github.com/nextauthjs/next-auth-example.git",
+  "description": "Calendar Application",
+  "repository": "https://github.com/TBD-salt-23/next-auth-test-lab",
   "bugs": {
-    "url": "https://github.com/nextauthjs/next-auth/issues"
+    "url": "https://github.com/TBD-salt-23/next-auth-test-lab/issues"
   },
-  "homepage": "https://next-auth-example.vercel.app",
+  "homepage": "https://next-auth-test-lab.vercel.app/",
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start"
   },
-  "author": "Iain Collins <me@iaincollins.com>",
+  "author": "Diana Borro, Hugo Dahlgren, Sebastian Palmqvist",
   "contributors": [
-    "Balázs Orbán <info@balazsorban.com>",
-    "Nico Domino <yo@ndo.dev>",
-    "Lluis Agusti <hi@llu.lu>"
+    ""
   ],
   "dependencies": {
     "axios": "^1.4.0",
