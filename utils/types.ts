@@ -1,28 +1,28 @@
 export type ApiEvent = {
-  created: '2023-07-18T06:35:13.000Z';
-  creator: { email: 'karlhugodahlgren@gmail.com'; self: true };
+  created: string;
+  creator: { email: string; self: boolean; };
   end: {
     date: string;
-    dateTime: '2023-07-24T10:00:00+02:00';
-    timeZone: 'Europe/Stockholm';
+    dateTime: string;
+    timeZone: string;
   };
-  etag: '"3379324306825000"';
-  eventType: 'default';
-  htmlLink: 'https://www.google.com/calendar/event?eid=Xzg4b2pnY2k1NmtzamdiOWs3NHFrY2I5azZjcWowYmEyNnQyazJiOWg2dDI0NGNxNDY0cDM0aGk1NmMga2FybGh1Z29kYWhsZ3JlbkBt';
-  iCalUID: 'B182E598-495F-4350-B7EA-17DB3D122FE3';
-  id: '_88ojgci56ksjgb9k74qkcb9k6cqj0ba26t2k2b9h6t244cq464p34hi56c';
-  kind: 'calendar#event';
-  organizer: { email: 'karlhugodahlgren@gmail.com'; self: true };
-  reminders: { useDefault: false };
-  sequence: 1;
+  etag: string;
+  eventType: string;
+  htmlLink: string;
+  iCalUID: string;
+  id: string;
+  kind: string;
+  organizer: { email: string; self: boolean; };
+  reminders: { useDefault: boolean; };
+  sequence: number;
   start: {
     date: string;
-    dateTime: '2023-07-24T09:00:00+02:00';
-    timeZone: 'Europe/Stockholm';
+    dateTime: string;
+    timeZone: string;
   };
-  status: 'confirmed';
-  summary: 'TEST';
-  updated: '2023-07-18T06:36:33.765Z';
+  status: string;
+  summary: string;
+  updated: string;
 };
 
 export type GoogleTime = {
@@ -43,33 +43,33 @@ export type CalendarResponse = {
 };
 
 export type Token = {
-  name: 'Hugo Dahlgren';
-  email: 'karlhugodahlgren@gmail.com';
-  picture: 'https://lh3.googleusercontent.com/a/AAcHTtfl8xxXMKUlpRF54gOrJtgYGiL-mejkOloox3jGTL7DjA=s96-c';
-  sub: '101588353989906017708';
-  userRole: 'admin';
-  accessToken: 'ya29.a0AbVbY6Pr6F748FgFoj8WthtQfGSM8Y0yWwRerQkGOFZcpUvTPZUU8qx1z06mVZ7Zb-3cqBmD_QHxOdhnD7l2z8ePTvz1i_g3n9oXCxILlhXcReCVB_odM7sXyMo7GWU9oxYwHB2I0-SFQFKuybh7XV9-CAdIaCgYKAe4SARASFQFWKvPlDLALmUWH2PKMlkK2lCIMIg0163';
-  id: '101588353989906017708';
-  iat: 1689669206;
-  exp: 1692261206;
-  jti: '93bdfc20-1a44-448c-b86a-9ed0eda6a79b';
+  name: string;
+  email: string;
+  picture: string;
+  sub: string;
+  userRole: string;
+  accessToken: string;
+  id: string;
+  iat: number;
+  exp: number;
+  jti: string;
 };
 
 export type GoogleCalendar = {
-  kind: 'calendar#calendarListEntry';
-  etag: '"1662299852475000"';
-  id: 'diana.borro@appliedtechnology.se';
-  summary: 'diana.borro@appliedtechnology.se';
-  timeZone: 'Europe/Berlin';
-  colorId: '14';
-  backgroundColor: '#9fe1e7';
-  foregroundColor: '#000000';
-  selected: true;
-  accessRole: 'owner';
+  kind: string;
+  etag: string;
+  id: string;
+  summary: string;
+  timeZone: string;
+  colorId: string;
+  backgroundColor: string;
+  foregroundColor: string;
+  selected: boolean;
+  accessRole: string;
   defaultReminders: [[Object]];
-  notificationSettings: { notifications: [] };
-  primary: true;
-  conferenceProperties: { allowedConferenceSolutionTypes: [] };
+  notificationSettings: { notifications: []; };
+  primary: boolean;
+  conferenceProperties: { allowedConferenceSolutionTypes: []; };
 };
 
 export type Slot = {
