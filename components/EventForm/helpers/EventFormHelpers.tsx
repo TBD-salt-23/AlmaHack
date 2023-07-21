@@ -1,4 +1,4 @@
-import { Slot, ApiEvent } from '../../../utils/types';
+import { Slot, ApiEvent, StoredValue } from '../../../utils/types';
 import NewEventInfo from '../NewEventInfo';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
@@ -27,7 +27,20 @@ export const parseEventsToAdd = (
     const duration = durationArr.current[i].value;
     const title = titleArr.current[i].value;
     const description = descriptionArr.current[i].value || '';
-    eventsToAdd.push({ startWindow, endWindow, duration, title, description });
+
+    if (duration && title) {
+      eventsToAdd.push({
+        startWindow,
+        endWindow,
+        duration,
+        title,
+        description,
+      });
+    }
+  }
+  if (eventsToAdd.length === 0) {
+    toast.warn('Task name and duration are required!');
+    return eventsToAdd;
   }
   return eventsToAdd;
 };
@@ -36,9 +49,14 @@ export const returnNewEventInfo = (
   titleArr: React.MutableRefObject<HTMLInputElement[]>,
   durationArr: React.MutableRefObject<HTMLInputElement[]>,
   descriptionArr: React.MutableRefObject<HTMLInputElement[]>,
-  inputsToDisplay: number
+  inputsToDisplay: number,
+  storedValueArray: StoredValue[]
 ) => {
   const newEvents = [];
+  console.log(
+    'this is stored values inside the new event returner',
+    storedValueArray
+  );
   for (let i = 0; i < inputsToDisplay; i++) {
     const identifier = uuid();
     newEvents.push(
@@ -48,6 +66,7 @@ export const returnNewEventInfo = (
         descriptionRef={(el: HTMLInputElement) =>
           (descriptionArr.current[i] = el)
         }
+        storedValue={storedValueArray[i] || ''}
         uuid={identifier}
         key={identifier}
       />

@@ -1,4 +1,5 @@
 import React, { forwardRef } from 'react';
+import { StoredValue } from '../../utils/types';
 import { useRef } from 'react';
 
 // export type NewEventInfoProps = {
@@ -10,10 +11,11 @@ export type NewEventInfoProps = {
   titleRef: React.LegacyRef<HTMLInputElement>;
   durationRef: React.LegacyRef<HTMLInputElement>;
   descriptionRef: React.LegacyRef<HTMLInputElement>;
+  storedValue: StoredValue;
   uuid: string;
 };
 const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
-  const { titleRef, durationRef, descriptionRef, uuid } = props;
+  const { titleRef, durationRef, descriptionRef, storedValue, uuid } = props;
 
   return (
     <>
@@ -24,7 +26,7 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           type="text"
           id={`eventTitle${uuid}`}
           placeholder="Event summary..."
-          required
+          defaultValue={storedValue.title}
         />
         <label htmlFor={`eventDuration${uuid}`}>Duration</label>
 
@@ -33,7 +35,7 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           type="number"
           id={`eventDuration${uuid}`}
           placeholder="Expected duration..."
-          required
+          defaultValue={storedValue.duration}
         />
         <span> Hours</span>
         <label htmlFor={`eventDescription${uuid}`}>Description</label>
@@ -42,6 +44,7 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           type="text"
           id={`eventDescription${uuid}`}
           placeholder="Notes..."
+          defaultValue={storedValue.description}
         />
       </div>
     </>

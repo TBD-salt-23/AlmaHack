@@ -4,7 +4,11 @@ export type EventInput = {
   duration: string;
   title: string;
 };
-
+export type StoredValue = {
+  title: string;
+  duration: string;
+  description?: string;
+};
 export type ApiEvent = {
   description?: string;
   created: string;

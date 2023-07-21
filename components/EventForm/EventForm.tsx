@@ -5,7 +5,7 @@ import {
   generateAppropriateTime as parseTimeSlotWindowAsUnix,
   shuffle,
 } from '../../utils/helpers';
-import { CalendarResponse, EventInput } from '../../utils/types';
+import { CalendarResponse, StoredValue } from '../../utils/types';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
@@ -27,6 +27,7 @@ type EventFormProps = {
   setCalendarToRender: (calendarToRender: string) => void;
   calendarToRender: string;
 };
+let storedValueArray: StoredValue[] = [];
 
 const EventForm = (props: EventFormProps) => {
   const { fetchData, content, setCalendarToRender, calendarToRender } = props;
@@ -40,6 +41,7 @@ const EventForm = (props: EventFormProps) => {
   const durationArr = useRef<HTMLInputElement[]>([]);
   const descriptionArr = useRef<HTMLInputElement[]>([]);
 
+  storedValueArray.length = inputsToDisplay;
   // useEffect(() => {
   //   // titleArr.current = titleArr.current.slice(0, inputsToDisplay);
   //   // durationArr.current = durationArr.current.slice(0, inputsToDisplay);
@@ -57,6 +59,18 @@ const EventForm = (props: EventFormProps) => {
   if (!content.calendarList.length) {
     return <p>Loading....</p>;
   }
+
+  const incrementInputLines = () => {
+    for (let i = 0; i < inputsToDisplay; i++) {
+      const valuesToStore = {
+        title: titleArr.current[i].value,
+        duration: durationArr.current[i].value,
+        description: descriptionArr.current[i].value || '',
+      };
+      storedValueArray[i] = valuesToStore;
+    }
+    setInputsToDisplay(inputsToDisplay + 1);
+  };
 
   const occupiedSlots = getOccupiedSlots(eventList);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -139,17 +153,18 @@ const EventForm = (props: EventFormProps) => {
           type="checkbox"
           onChange={e => {
             if (!e.target.checked) {
-              setInputsToDisplay(1);
-              console.log('setting inputs to 1');
-            } else {
-              setInputsToDisplay(3);
-              console.log('setting inputs to 3');
+              return setInputsToDisplay(1);
             }
+            return setInputsToDisplay(3);
           }}
         />
         <span className={[styles.slider, styles.round].join(' ')}></span>
       </label>
-      <form className={styles.event__form} onSubmit={handleSubmit}>
+      <form
+        className={styles.event__form}
+        onSubmit={handleSubmit}
+        id="inputForm"
+      >
         <label>Time Slot</label>
         <div>
           <input
@@ -194,9 +209,15 @@ const EventForm = (props: EventFormProps) => {
           titleArr,
           durationArr,
           descriptionArr,
-          inputsToDisplay
+          inputsToDisplay,
+          storedValueArray
         )}
-        <button>Submit</button>
+        <button type="button" onClick={incrementInputLines}>
+          +
+        </button>
+        <button id="inputForm" type="submit">
+          Submit
+        </button>
       </form>
     </section>
   );
