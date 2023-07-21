@@ -18,13 +18,14 @@ const renderEvents = (event: ApiEvent) => {
   if (event.start.dateTime) {
     return (
       <li key={uuid()} className={styles['event__list-item']}>
-        <div>
-          <h3 className={styles.event__list__heading}>{event.summary}</h3>
-          <p>{event.description}</p>
-        </div>
+        <h3 className={styles.event__list__heading}>{event.summary}</h3>
+        <p className={styles.event__description}>{event.description}</p>
 
-        <p>
-          {parseTimeNicely(event.start.dateTime)} -{' '}
+        <p className={styles.event__from}>
+          {parseTimeNicely(event.start.dateTime)}
+        </p>
+        <span className={styles.spanSpacer}> - </span>
+        <p className={styles.event__to}>
           {parseTimeNicely(event.end.dateTime)}
         </p>
       </li>
@@ -38,7 +39,11 @@ const renderEvents = (event: ApiEvent) => {
     return (
       <li key={uuid()} className={styles['event__list-item']}>
         <h3 className={styles.event__list__heading}>{event.summary}</h3>
-        <p>{parseAllDayEvents(new Date(event.start.date).toString())}</p>
+        <p className={styles.event__description}>{event.description}</p>
+
+        <p className={styles.event__from}>
+          {parseAllDayEvents(new Date(event.start.date).toString())}
+        </p>
       </li>
     );
   }
@@ -46,8 +51,13 @@ const renderEvents = (event: ApiEvent) => {
   return (
     <li key={uuid()} className={styles['event__list-item']}>
       <h3 className={styles.event__list__heading}>{event.summary}</h3>
-      <p>
-        {parseAllDayEvents(new Date(convertedDateStart).toString())} -{' '}
+      <p className={styles.event__description}>{event.description}</p>
+
+      <p className={styles.event__from}>
+        {parseAllDayEvents(new Date(convertedDateStart).toString())}
+      </p>
+      <span className={styles.spanSpacer}> - </span>
+      <p className={styles.event__to}>
         {parseAllDayEvents(new Date(convertedDateEnd - ONE_DAY).toString())}{' '}
       </p>
     </li>
