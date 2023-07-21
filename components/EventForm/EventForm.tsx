@@ -147,6 +147,8 @@ const EventForm = (props: EventFormProps) => {
         toast.success('Sent ;)');
         console.log('this is the res from the onclick button', res);
         await fetchData(calendarId);
+        storedValueArray = [];
+        setInputsToDisplay(1);
       }
     );
   };

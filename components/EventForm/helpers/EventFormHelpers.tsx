@@ -180,7 +180,7 @@ export const filterOccupiedSlots = (
           );
         })
       );
-      if (freeQuarters.length === quartersInDuration) {
+      if (freeQuarters.length >= quartersInDuration) {
         unoccupiedSlots.push(freeQuarters);
         console.log(
           `free quarters (${freeQuarters.length}) is now equivalent to the length of the duration in quarters (${quartersInDuration}), adding to unoccupied slots`,
