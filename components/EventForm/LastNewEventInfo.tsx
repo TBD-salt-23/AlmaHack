@@ -35,9 +35,7 @@ const LastNewEventInfo = forwardRef((props: NewEventInfoProps) => {
           id={`eventTitle${uuid}`}
           placeholder="Event summary..."
           defaultValue={storedValue.title}
-          onFocus={e => {
-            incrementInputLines();
-          }}
+          onFocus={incrementInputLines}
         />
         <label htmlFor={`eventDuration${uuid}`}>Duration</label>
 

@@ -71,7 +71,6 @@ export const returnNewEventInfo = (
 
   for (let i = 0; i < inputsToDisplay; i++) {
     if (i === inputsToDisplay - 1) {
-      // const identifier = uuid();
       newEvents.push(
         <LastNewEventInfo
           titleRef={(el: HTMLInputElement) => (titleArr.current[i] = el)}
@@ -88,7 +87,6 @@ export const returnNewEventInfo = (
 
       return newEvents;
     }
-    // const identifier = uuid();
 
     newEvents.push(
       <NewEventInfo

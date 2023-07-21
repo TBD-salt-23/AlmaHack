@@ -45,10 +45,6 @@ const EventForm = (props: EventFormProps) => {
   storedValueArray.length = inputsToDisplay;
   useEffect(() => {
     if (inputsToDisplay > 1) {
-      if (inputsToDisplay === 3) {
-        titleArr.current[0].focus();
-        return;
-      }
       titleArr.current[inputsToDisplay - 2].focus();
     }
   });
@@ -158,18 +154,6 @@ const EventForm = (props: EventFormProps) => {
 
   return (
     <section>
-      <label className={styles.switch}>
-        <input
-          type="checkbox"
-          onChange={e => {
-            if (!e.target.checked) {
-              return setInputsToDisplay(1);
-            }
-            return setInputsToDisplay(3);
-          }}
-        />
-        <span className={[styles.slider, styles.round].join(' ')}></span>
-      </label>
       <form
         className={styles.event__form}
         onSubmit={handleSubmit}
@@ -223,9 +207,6 @@ const EventForm = (props: EventFormProps) => {
           storedValueArray,
           incrementInputLines
         )}
-        <button type="button" onClick={incrementInputLines}>
-          +
-        </button>
         <button id="inputForm" type="submit">
           Submit
         </button>

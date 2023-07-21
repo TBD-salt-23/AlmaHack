@@ -1,11 +1,5 @@
 import React, { forwardRef } from 'react';
 import { StoredValue } from '../../utils/types';
-import { useRef } from 'react';
-
-// export type NewEventInfoProps = {
-//   titleRef: React.RefObject<HTMLInputElement>;
-//   durationRef: React.RefObject<HTMLInputElement>;
-// };
 
 export type NewEventInfoProps = {
   titleRef: React.LegacyRef<HTMLInputElement>;
