@@ -47,7 +47,7 @@ const EventForm = (props: EventFormProps) => {
     if (inputsToDisplay > 1) {
       titleArr.current[inputsToDisplay - 2].focus();
     }
-  });
+  }, [inputsToDisplay]);
   // useEffect(() => {
   //   // titleArr.current = titleArr.current.slice(0, inputsToDisplay);
   //   // durationArr.current = durationArr.current.slice(0, inputsToDisplay);
