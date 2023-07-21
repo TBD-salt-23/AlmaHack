@@ -46,7 +46,6 @@ const getNextWeekFromGoogle = async (
         summary: calendar.summary,
       }));
     const calendarList = [...primaryCalendar, ...ownedCalendars];
-    console.log('calendar list', calendarList);
 
     const eventResponse = await axios.get(`${BASE_URL}/${calendarId}/events`, {
       headers: {
