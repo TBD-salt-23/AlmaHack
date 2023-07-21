@@ -2,7 +2,6 @@ import { Slot, ApiEvent, StoredValue } from '../../../utils/types';
 import NewEventInfo from '../NewEventInfo';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
-import LastNewEventInfo from '../LastNewEventInfo';
 
 export const handleSelect = (
   e: React.ChangeEvent<HTMLSelectElement>,
@@ -72,7 +71,7 @@ export const returnNewEventInfo = (
   for (let i = 0; i < inputsToDisplay; i++) {
     if (i === inputsToDisplay - 1) {
       newEvents.push(
-        <LastNewEventInfo
+        <NewEventInfo
           titleRef={(el: HTMLInputElement) => (titleArr.current[i] = el)}
           durationRef={(el: HTMLInputElement) => (durationArr.current[i] = el)}
           descriptionRef={(el: HTMLInputElement) =>

@@ -7,9 +7,17 @@ export type NewEventInfoProps = {
   descriptionRef: React.LegacyRef<HTMLInputElement>;
   storedValue: StoredValue;
   uuid: string;
+  incrementInputLines?: () => void;
 };
 const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
-  const { titleRef, durationRef, descriptionRef, storedValue, uuid } = props;
+  const {
+    titleRef,
+    durationRef,
+    descriptionRef,
+    storedValue,
+    uuid,
+    incrementInputLines,
+  } = props;
 
   return (
     <>
@@ -21,6 +29,11 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           id={`eventTitle${uuid}`}
           placeholder="Event summary..."
           defaultValue={storedValue.title}
+          onFocus={() => {
+            if (incrementInputLines) {
+              incrementInputLines();
+            }
+          }}
         />
         <label htmlFor={`eventDuration${uuid}`}>Duration</label>
 
