@@ -63,10 +63,6 @@ export const returnNewEventInfo = (
   incrementInputLines: () => void
 ) => {
   const newEvents = [];
-  console.log(
-    'this is stored values inside the new event returner',
-    storedValueArray
-  );
 
   for (let i = 0; i < inputsToDisplay; i++) {
     if (i === inputsToDisplay - 1) {
@@ -122,7 +118,11 @@ export const filterOccupiedSlots = (
   const aQuarterMiliseconds = 1 * 15 * 60 * 1000;
   const quartersInDuration = durationMiliseconds / aQuarterMiliseconds;
   let freeQuarters = [];
-
+  console.log(
+    'The expected timeslot for this activity is',
+    quartersInDuration,
+    'in quarters'
+  );
   for (
     let timeSlotIterator = 0;
     timeSlotIterator < possibleTimes.length;
@@ -180,7 +180,7 @@ export const filterOccupiedSlots = (
           );
         })
       );
-      if (freeQuarters.length) {
+      if (freeQuarters.length === quartersInDuration) {
         unoccupiedSlots.push(freeQuarters);
         console.log(
           `free quarters (${freeQuarters.length}) is now equivalent to the length of the duration in quarters (${quartersInDuration}), adding to unoccupied slots`,

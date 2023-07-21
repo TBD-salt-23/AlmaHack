@@ -16,9 +16,6 @@ export default function IndexPage() {
   const fetchCalendarData = async (calendarId: string = 'primary') => {
     try {
       const res = await fetch(`/api/${calendarId}/events`);
-      console.log('this is the calendarId in index.ts', calendarId);
-      console.log('this is the res when there is an error', res);
-
       const calendarResponse = await res.json();
 
       setCalendarData(calendarResponse);
