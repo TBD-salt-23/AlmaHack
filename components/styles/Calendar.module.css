@@ -3,6 +3,43 @@
   justify-content: space-between;
 }
 
+.event__list-item {
+  background-color: aliceblue;
+  margin-top: 10px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 60% 10% 30%;
+  grid-template-rows: 45% 10% 45%;
+  grid-template-areas:
+    "taskT . timeStart"
+    ". . timeSpan"
+    "taskD . timeEnd"
+  ;
+}
+
 .event__list__heading {
   width: 25%;
+  grid-area: taskT
+}
+
+.upcoming__events__list {
+  padding: 10px;
+  background-color: aqua;
+}
+
+.event__from {
+  grid-area: timeStart;
+}
+
+.event__to {
+  margin-top: 0.2em;
+  grid-area: timeEnd;
+}
+
+.span {
+  grid-area: timeSpan;
+}
+
+.event__description {
+  grid-area: taskD;
 }

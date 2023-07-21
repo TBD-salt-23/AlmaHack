@@ -1,5 +1,6 @@
 import React, { forwardRef } from 'react';
 import { StoredValue } from '../../utils/types';
+import styles from './styles/NewEventInfo.module.css';
 
 export type NewEventInfoProps = {
   titleRef: React.LegacyRef<HTMLInputElement>;
@@ -21,9 +22,12 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
 
   return (
     <>
-      <div>
-        <label htmlFor={`eventTitle${uuid}`}>Task</label>
+      <div className={styles['event__form__input-container']}>
+        <label htmlFor={`eventTitle${uuid}`} className={styles.itemA}>
+          Task
+        </label>
         <input
+          className={styles.itemC}
           ref={titleRef}
           type="text"
           id={`eventTitle${uuid}`}
@@ -35,18 +39,23 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
             }
           }}
         />
-        <label htmlFor={`eventDuration${uuid}`}>Duration</label>
 
+        <label htmlFor={`eventDuration${uuid}`} className={styles.itemB}>
+          Duration
+        </label>
         <input
+          className={styles.itemD}
           ref={durationRef}
           type="number"
           id={`eventDuration${uuid}`}
-          placeholder="Expected duration..."
+          placeholder="Hours..."
           defaultValue={storedValue.duration}
         />
-        <span> Hours</span>
-        <label htmlFor={`eventDescription${uuid}`}>Description</label>
+        <label htmlFor={`eventDescription${uuid}`} className={styles.itemE}>
+          Description
+        </label>
         <input
+          className={styles.itemF}
           ref={descriptionRef}
           type="text"
           id={`eventDescription${uuid}`}

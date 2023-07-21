@@ -1,0 +1,55 @@
+.event__form__input-container {
+  width: 100%;
+  padding: 0.5em;
+  margin-top: 0.5em;
+  border: 1px solid black;
+  border-radius: 0.2em;
+  background-color: palegoldenrod;
+  animation: fadeIn 0.8s;
+  display: grid;
+  background-color: aqua;
+  grid-template-columns: 70% 10% 20%;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "taskTitle . durationTitle"
+    "taskContent . durationContent"
+    "descriptionT . ."
+    "descriptionC descriptionC descriptionC"
+
+  ;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.itemA {
+  grid-area: taskTitle;
+}
+
+.itemB {
+  grid-area: durationTitle;
+}
+
+.itemC {
+  grid-area: taskContent;
+}
+
+.itemD {
+  grid-area: durationContent;
+}
+
+.itemE {
+  margin-top: 0.2em;
+  grid-area: descriptionT;
+}
+
+.itemF {
+  grid-area: descriptionC;
+}

@@ -162,6 +162,7 @@ const EventForm = (props: EventFormProps) => {
         <label>Time Slot</label>
         <div>
           <input
+          
             type="time"
             ref={eventTimeStart}
             min={'00:00'}
