@@ -37,14 +37,9 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account, profile }) {
       token.userRole = 'admin';
       if (account) {
-        console.log('this is account', account);
-        console.log('this is user', user);
-        console.log('this is profile', profile);
         token.accessToken = account.access_token;
         token.id = user.id;
       }
-
-      console.log('this is token', token);
       return token;
     },
   },

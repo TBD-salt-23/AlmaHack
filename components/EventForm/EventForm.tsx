@@ -139,9 +139,12 @@ const EventForm = (props: EventFormProps) => {
           type="checkbox"
           onChange={e => {
             if (!e.target.checked) {
-              return setInputsToDisplay(1);
+              setInputsToDisplay(1);
+              console.log('setting inputs to 1');
+            } else {
+              setInputsToDisplay(3);
+              console.log('setting inputs to 3');
             }
-            return setInputsToDisplay(3);
           }}
         />
         <span className={[styles.slider, styles.round].join(' ')}></span>
