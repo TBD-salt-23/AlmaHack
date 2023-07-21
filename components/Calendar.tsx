@@ -24,7 +24,7 @@ const renderEvents = (event: ApiEvent) => {
         <p className={styles.event__from}>
           {parseTimeNicely(event.start.dateTime)}
         </p>
-        <span className={styles.spanSpacer}> - </span>
+        <span className={styles.spanSpacer}>to</span>
         <p className={styles.event__to}>
           {parseTimeNicely(event.end.dateTime)}
         </p>
@@ -56,7 +56,7 @@ const renderEvents = (event: ApiEvent) => {
       <p className={styles.event__from}>
         {parseAllDayEvents(new Date(convertedDateStart).toString())}
       </p>
-      <span className={styles.spanSpacer}> - </span>
+      <span className={styles.spanSpacer}>to</span>
       <p className={styles.event__to}>
         {parseAllDayEvents(new Date(convertedDateEnd - ONE_DAY).toString())}{' '}
       </p>

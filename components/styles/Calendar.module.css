@@ -1,38 +1,53 @@
 .event__list-item {
+  border-radius: 1em;
   background-color: aliceblue;
   margin-top: 10px;
-  padding: 10px;
+  padding: 10px 10px 10px 20px;
   display: grid;
   grid-template-columns: 60% 10% 30%;
-  grid-template-rows: 45% 10% 45%;
+  grid-template-rows: 40% 20% 40%;
   grid-template-areas:
     "taskT . timeStart"
     ". . timeSpan"
     "taskD . timeEnd"
   ;
+  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.4);
 }
 
 .event__list__heading {
-  width: 25%;
   grid-area: taskT
 }
 
 .upcoming__events__list {
   padding: 10px;
-  background-color: aqua;
 }
 
 .event__from {
+  border-radius: 5px 5px 0 0;
+  padding-top: 10px;
+  text-align: center;
+  margin: 0;
+  background-color: white;
   grid-area: timeStart;
 }
 
 .event__to {
-  margin-top: 0.2em;
+  border-radius: 0 0 5px 5px;
+  padding-top: 10px;
+  text-align: center;
+  margin: 0;
+  background-color: white;
   grid-area: timeEnd;
 }
 
 .spanSpacer {
+  margin: 0;
+  background-color: white;
+  text-align: center;
   grid-area: timeSpan;
+
 }
 
 .event__description {

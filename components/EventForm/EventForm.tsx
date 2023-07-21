@@ -18,7 +18,6 @@ import {
   handleSelect,
 } from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
-import { title } from 'process';
 
 //TODO: IMPLEMENT TOASTIFY FOR ERROR HANDLING
 
@@ -162,7 +161,6 @@ const EventForm = (props: EventFormProps) => {
         <label>Time Slot</label>
         <div>
           <input
-          
             type="time"
             ref={eventTimeStart}
             min={'00:00'}
@@ -187,11 +185,11 @@ const EventForm = (props: EventFormProps) => {
             id="calendarSelect"
             ref={eventSelectCalendar}
             value={calendarToRender}
-            onChange={e => {
+            onChange={(e) => {
               handleSelect(e, setCalendarToRender);
             }}
           >
-            {calendarList.map(calendar => {
+            {calendarList.map((calendar) => {
               return (
                 <option key={uuid()} value={calendar.id}>
                   {calendar.summary}
@@ -208,7 +206,7 @@ const EventForm = (props: EventFormProps) => {
           storedValueArray,
           incrementInputLines
         )}
-        <button id="inputForm" type="submit">
+        <button className={styles.submit__button} id="inputForm" type="submit">
           Submit
         </button>
       </form>
