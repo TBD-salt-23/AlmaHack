@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   hoursToMiliseconds,
@@ -18,6 +18,7 @@ import {
   handleSelect,
 } from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
+import { title } from 'process';
 
 //TODO: IMPLEMENT TOASTIFY FOR ERROR HANDLING
 
@@ -42,6 +43,15 @@ const EventForm = (props: EventFormProps) => {
   const descriptionArr = useRef<HTMLInputElement[]>([]);
 
   storedValueArray.length = inputsToDisplay;
+  useEffect(() => {
+    if (inputsToDisplay > 1) {
+      if (inputsToDisplay === 3) {
+        titleArr.current[0].focus();
+        return;
+      }
+      titleArr.current[inputsToDisplay - 2].focus();
+    }
+  });
   // useEffect(() => {
   //   // titleArr.current = titleArr.current.slice(0, inputsToDisplay);
   //   // durationArr.current = durationArr.current.slice(0, inputsToDisplay);
@@ -210,7 +220,8 @@ const EventForm = (props: EventFormProps) => {
           durationArr,
           descriptionArr,
           inputsToDisplay,
-          storedValueArray
+          storedValueArray,
+          incrementInputLines
         )}
         <button type="button" onClick={incrementInputLines}>
           +

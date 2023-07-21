@@ -2,6 +2,7 @@ import { Slot, ApiEvent, StoredValue } from '../../../utils/types';
 import NewEventInfo from '../NewEventInfo';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
+import LastNewEventInfo from '../LastNewEventInfo';
 
 export const handleSelect = (
   e: React.ChangeEvent<HTMLSelectElement>,
@@ -45,20 +46,50 @@ export const parseEventsToAdd = (
   return eventsToAdd;
 };
 
+const KEY_ARRAY: string[] = [];
+
+const makeOrFindUuid = (i: number) => {
+  if (KEY_ARRAY[i]) {
+    return KEY_ARRAY[i];
+  }
+  return uuid();
+};
+
 export const returnNewEventInfo = (
   titleArr: React.MutableRefObject<HTMLInputElement[]>,
   durationArr: React.MutableRefObject<HTMLInputElement[]>,
   descriptionArr: React.MutableRefObject<HTMLInputElement[]>,
   inputsToDisplay: number,
-  storedValueArray: StoredValue[]
+  storedValueArray: StoredValue[],
+  incrementInputLines: () => void
 ) => {
   const newEvents = [];
   console.log(
     'this is stored values inside the new event returner',
     storedValueArray
   );
+
   for (let i = 0; i < inputsToDisplay; i++) {
-    const identifier = uuid();
+    if (i === inputsToDisplay - 1) {
+      // const identifier = uuid();
+      newEvents.push(
+        <LastNewEventInfo
+          titleRef={(el: HTMLInputElement) => (titleArr.current[i] = el)}
+          durationRef={(el: HTMLInputElement) => (durationArr.current[i] = el)}
+          descriptionRef={(el: HTMLInputElement) =>
+            (descriptionArr.current[i] = el)
+          }
+          storedValue={storedValueArray[i] || ''}
+          uuid={makeOrFindUuid(i)}
+          incrementInputLines={incrementInputLines}
+          key={makeOrFindUuid(i)}
+        />
+      );
+
+      return newEvents;
+    }
+    // const identifier = uuid();
+
     newEvents.push(
       <NewEventInfo
         titleRef={(el: HTMLInputElement) => (titleArr.current[i] = el)}
@@ -67,8 +98,8 @@ export const returnNewEventInfo = (
           (descriptionArr.current[i] = el)
         }
         storedValue={storedValueArray[i] || ''}
-        uuid={identifier}
-        key={identifier}
+        uuid={makeOrFindUuid(i)}
+        key={makeOrFindUuid(i)}
       />
     );
   }
