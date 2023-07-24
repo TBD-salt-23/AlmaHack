@@ -1,0 +1,25 @@
+.landing__info {
+  background-color: #FF5722;
+  color: white;
+  text-align: center;
+  padding-block: 2em;
+  margin-bottom: 2em;
+}
+
+.button__login__container {}
+
+.cta__button__login {
+  background-color: #FF5722;
+  border-style: none;
+  color: white;
+  padding: 1em;
+  border-radius: 1em;
+}
+
+.landing__heading {
+  font-size: 2em;
+  text-align: center;
+  color: white;
+  margin-block: 1.5em;
+  text-shadow: -1px 0 #E64A19, 0 1px #E64A19, 3px 0 #E64A19, 0 -1px #E64A19;
+}

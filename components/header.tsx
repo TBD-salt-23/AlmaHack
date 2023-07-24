@@ -11,19 +11,11 @@ export default function Header() {
 
   return (
     <header>
-      {/* <div>
-        <img src="assets/image-removebg-preview.png" alt="" />
-      </div> */}
-      <nav className={styles.navbar}>
-        <ul className={styles.navbar__list}>
-          <li>
-            <a href="#">Home</a>
-          </li>
-          <li>
-            <a href="#">Calendar</a>
-          </li>
-        </ul>
-      </nav>
+      <div className={styles.logo__container}>
+        <a className={styles.logo__text} href="#">
+          AlmaHack
+        </a>
+      </div>
       <noscript>
         <style>{`.nojs-show { opacity: 1; top: 0; }`}</style>
       </noscript>

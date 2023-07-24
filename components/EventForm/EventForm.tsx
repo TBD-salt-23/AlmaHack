@@ -59,7 +59,8 @@ const EventForm = (props: EventFormProps) => {
 
   const { data: session } = useSession();
   if (!session) {
-    return <AccessDenied />;
+    // return <AccessDenied />;
+    return;
   }
   if (!content.calendarList.length) {
     return <p>Loading....</p>;

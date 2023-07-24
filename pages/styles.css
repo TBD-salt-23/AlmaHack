@@ -30,6 +30,7 @@ input {
 header {
   display: flex;
   background-color: #E64A19;
+  align-items: center;
 }
 
 li,
