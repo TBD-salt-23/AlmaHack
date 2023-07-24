@@ -2,10 +2,14 @@ import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   hoursToMiliseconds,
-  generateAppropriateTime as parseTimeSlotWindowAsUnix,
+  parseTimeSlotWindowAsUnix as parseTimeSlotWindowAsUnix,
   shuffle,
 } from '../../utils/helpers';
-import { CalendarResponse, StoredValue } from '../../utils/types';
+import {
+  CalendarResponse,
+  StoredValue,
+  WeekDayAndBoolean,
+} from '../../utils/types';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
@@ -28,6 +32,16 @@ type EventFormProps = {
   calendarToRender: string;
 };
 let storedValueArray: StoredValue[] = [];
+
+const daysForTasks: WeekDayAndBoolean[] = [
+  { name: 'S', checked: false },
+  { name: 'M', checked: true },
+  { name: 'T', checked: true },
+  { name: 'W', checked: true },
+  { name: 'T', checked: true },
+  { name: 'F', checked: true },
+  { name: 'S', checked: false },
+];
 
 const EventForm = (props: EventFormProps) => {
   const { fetchData, content, setCalendarToRender, calendarToRender } = props;
@@ -65,6 +79,23 @@ const EventForm = (props: EventFormProps) => {
   if (!content.calendarList.length) {
     return <p>Loading....</p>;
   }
+
+  const renderWeekdayOption = (day: WeekDayAndBoolean) => {
+    return (
+      // </option>
+      <li key={uuid()}>
+        <input
+          id="day"
+          type="checkbox"
+          defaultChecked={day.checked}
+          onChange={() => {
+            day.checked ? (day.checked = false) : (day.checked = true);
+          }}
+        />
+        <label htmlFor="day">{day.name}</label>
+      </li>
+    );
+  };
 
   const incrementInputLines = () => {
     for (let i = 0; i < inputsToDisplay; i++) {
@@ -105,7 +136,8 @@ const EventForm = (props: EventFormProps) => {
         const windowAsUnix = parseTimeSlotWindowAsUnix(
           startWindow,
           endWindow,
-          durationMiliseconds
+          durationMiliseconds,
+          daysForTasks
         );
         const unoccupiedSlots = filterOccupiedSlots(
           occupiedSlots,
@@ -183,34 +215,13 @@ const EventForm = (props: EventFormProps) => {
         </div>
         <label htmlFor="daysForTasks">Days for tasks</label>
         <ul>
-          <li>
-            <input id="Monday" type="checkbox" defaultChecked />
-            <label htmlFor="Monday">M</label>
-          </li>
-          <li>
-            <input id="Tuesday" type="checkbox" defaultChecked />
-            <label htmlFor="Tuesday">T</label>
-          </li>
-          <li>
-            <input id="Wednesday" type="checkbox" defaultChecked />
-            <label htmlFor="Wednesday">W</label>
-          </li>
-          <li>
-            <input id="Thursday" type="checkbox" defaultChecked />
-            <label htmlFor="Thursday">T</label>
-          </li>
-          <li>
-            <input id="Friday" type="checkbox" defaultChecked />
-            <label htmlFor="Friday">F</label>
-          </li>
-          <li>
-            <input id="Saturday" type="checkbox" />
-            <label htmlFor="Saturday">S</label>
-          </li>
-          <li>
-            <input id="Sunday" type="checkbox" />
-            <label htmlFor="Sunday">S</label>
-          </li>
+          {daysForTasks.map((_day, i) => {
+            let dayToRender = daysForTasks[i + 1];
+            if (i === 6) {
+              dayToRender = daysForTasks[0];
+            }
+            return renderWeekdayOption(dayToRender);
+          })}
         </ul>
         <label htmlFor="calendarSelect">Calendar</label>
         <div>

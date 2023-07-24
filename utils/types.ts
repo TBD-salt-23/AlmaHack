@@ -88,3 +88,8 @@ export type Slot = {
   start: number;
   end: number;
 };
+
+export type WeekDayAndBoolean = {
+  name: string;
+  checked: boolean;
+};

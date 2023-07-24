@@ -1,4 +1,5 @@
 import { DAYS_OF_WEEK } from './consts';
+import { WeekDayAndBoolean } from './types';
 export const weekBoundaries = () => {
   const currentDate = new Date();
   //'2023-07-22T23:59:59.000Z'
@@ -32,7 +33,6 @@ export const parseAllDayEvents = (time: string) =>
     new Date(time).getMonth() + 1
   }/${new Date(time).getDate()} (All day)`;
 
-
 export function shuffle(array: any[]) {
   const arrayCopy = [...array];
 
@@ -63,10 +63,11 @@ const hoursMinutesToUnix = (timeWindow: string) => {
   return [timeWindowHours, timeWindowMinutes];
 };
 
-export const generateAppropriateTime = (
+export const parseTimeSlotWindowAsUnix = (
   startWindow: string,
   endWindow: string,
-  durationMiliSeconds: number
+  durationMiliSeconds: number,
+  daysForTasks: WeekDayAndBoolean[]
 ) => {
   const [currentDate, nextWeekStart, nextWeekEnd] = weekBoundaries();
 
@@ -78,11 +79,16 @@ export const generateAppropriateTime = (
   const nextWeekStartUnix = nextWeekStart.getTime();
   const nextWeekEndUnix = nextWeekEnd.getTime();
   const appropriateTimeSlot = [];
+  let newI = 0;
   for (
     let dayIterator = nextWeekStartUnix;
     dayIterator < nextWeekEndUnix;
     dayIterator += 1000 * 60 * 60 * 24
   ) {
+    const currentWeekday = daysForTasks[new Date(dayIterator).getDay()];
+    if (!currentWeekday.checked) {
+      continue;
+    }
     for (
       let quarterIterator =
         dayIterator + startWindowUnixHours + startWindowUnixMinutes;
