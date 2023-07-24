@@ -11,6 +11,13 @@ export default function Header() {
 
   return (
     <header>
+      <div>
+        <ul>
+          <li>
+            <a href="#">Home</a>
+          </li>
+        </ul>
+      </div>
       <noscript>
         <style>{`.nojs-show { opacity: 1; top: 0; }`}</style>
       </noscript>
@@ -28,7 +35,7 @@ export default function Header() {
               <a
                 href={`/api/auth/signin`}
                 className={styles.buttonPrimary}
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   signIn();
                 }}
@@ -53,7 +60,7 @@ export default function Header() {
               <a
                 href={`/api/auth/signout`}
                 className={styles.button}
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   signOut();
                 }}

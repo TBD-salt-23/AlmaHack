@@ -183,6 +183,7 @@ const EventForm = (props: EventFormProps) => {
         <label htmlFor="calendarSelect">Calendar</label>
         <div>
           <select
+            className={styles.event__form__select}
             name=""
             id="calendarSelect"
             ref={eventSelectCalendar}

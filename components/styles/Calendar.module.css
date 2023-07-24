@@ -1,6 +1,7 @@
 .event__list-item {
   border-radius: 1em;
-  background-color: aliceblue;
+  color: white;
+  background-color: #FF570A;
   margin-top: 10px;
   padding: 10px 10px 10px 20px;
   display: grid;
@@ -17,6 +18,7 @@
 }
 
 .event__list__heading {
+  text-decoration: underline;
   grid-area: taskT
 }
 
@@ -24,13 +26,20 @@
   padding: 10px;
 }
 
+.upcoming__events__heading {
+  text-align: center;
+  border-bottom: 1px solid gray;
+}
+
 .event__from {
   border-radius: 5px 5px 0 0;
   padding-top: 10px;
   text-align: center;
   margin: 0;
-  background-color: white;
+  /* background-color: #12355B; */
   grid-area: timeStart;
+  border: 1px solid white;
+  border-bottom: 0;
 }
 
 .event__to {
@@ -38,16 +47,26 @@
   padding-top: 10px;
   text-align: center;
   margin: 0;
-  background-color: white;
+  /* background-color: #12355B; */
   grid-area: timeEnd;
+  border: 1px solid white;
+  border-top: 0;
+
 }
 
 .spanSpacer {
   margin: 0;
-  background-color: white;
+  /* background-color: #12355B; */
   text-align: center;
   grid-area: timeSpan;
+  border: 1px solid white;
+  border-block: 0;
+}
 
+.spanSpacer,
+.event__from,
+.event__to {
+  padding-inline: 4px;
 }
 
 .event__description {

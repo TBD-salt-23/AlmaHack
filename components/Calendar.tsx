@@ -77,15 +77,15 @@ export default function Calendar(props: CalendarProps) {
     return (
       <>
         <h1>Events next week</h1>
-        <p>'No upcoming events'</p>
+        <p>No upcoming events</p>
       </>
     );
   }
 
   return (
     <>
-      <h1>Events next week</h1>
-      <ul>
+      <h1 className={styles.upcoming__events__heading}>Events next week</h1>
+      <ul className={styles.upcoming__events__list}>
         {content.map(renderEvents) ||
           'Issues loading events, try signing out and then back in :)'}
       </ul>
