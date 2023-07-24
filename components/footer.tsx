@@ -7,9 +7,23 @@ export default function Footer() {
     <footer className={styles.footer}>
       <hr />
       <ul className={styles.navItems}>
-        <li className={styles.navItem}>
-          <em>We can put our contact info here :)</em>
-        </li>
+        <em>
+          Developed by:{' '}
+          <a
+            className={styles.contactLink}
+            href="https://github.com/DianaBorro"
+          >
+            Diana Borro
+          </a>
+          ,{' '}
+          <a className={styles.contactLink} href="https://github.com/snygghugo">
+            Hugo Dahlgren
+          </a>{' '}
+          and{' '}
+          <a className={styles.contactLink} href="https://github.com/PalmN72">
+            Sebastian Palmqvist
+          </a>
+        </em>
       </ul>
     </footer>
   );

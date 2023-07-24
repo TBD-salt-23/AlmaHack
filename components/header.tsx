@@ -11,9 +11,9 @@ export default function Header() {
 
   return (
     <header>
-      <div>
-        <img src="" alt="" />
-      </div>
+      {/* <div>
+        <img src="assets/image-removebg-preview.png" alt="" />
+      </div> */}
       <nav className={styles.navbar}>
         <ul className={styles.navbar__list}>
           <li>
@@ -41,7 +41,7 @@ export default function Header() {
               <a
                 href={`/api/auth/signin`}
                 className={styles.buttonPrimary}
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   signIn();
                 }}
@@ -68,7 +68,7 @@ export default function Header() {
               <a
                 href={`/api/auth/signout`}
                 className={styles.button}
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   signOut();
                 }}

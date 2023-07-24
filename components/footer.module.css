@@ -6,9 +6,15 @@
   margin-bottom: 1rem;
   padding: 0;
   list-style: none;
+  text-align: center;
+  color: #757575;
 }
 
 .navItem {
   display: inline-block;
   margin-right: 1rem;
+}
+
+.contactLink {
+  color: #E64A19
 }

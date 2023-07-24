@@ -154,7 +154,7 @@ const EventForm = (props: EventFormProps) => {
   };
 
   return (
-    <section>
+    <section className={styles.section__eventform}>
       <form
         className={styles.event__form}
         onSubmit={handleSubmit}

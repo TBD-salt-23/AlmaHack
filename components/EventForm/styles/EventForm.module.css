@@ -66,8 +66,15 @@ input:checked+.slider:before {
   align-items: center;
   justify-content: center;
   padding: 10px;
+  max-width: 600px;
   /* border-radius: 10px; */
   color: white;
+  margin: 0 auto;
+}
+
+.section__eventform {
+  background-color: #FF570A;
+  border-radius: 0 0 1em 1em;
 }
 
 .event__form__select {
