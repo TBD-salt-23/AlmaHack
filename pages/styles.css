@@ -6,6 +6,15 @@ body {
   margin: 0 auto;
   background: #fff;
   color: #333;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.upcoming__section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 40vh;
 }
 
 input {
@@ -15,6 +24,11 @@ input {
   padding-top: 1px;
 }
 
+header {
+  display: flex;
+  background-color: #E64A19;
+}
+
 li,
 p {
   line-height: 1.5rem;
@@ -22,6 +36,7 @@ p {
 
 a {
   font-weight: 500;
+  color: white;
 }
 
 hr {

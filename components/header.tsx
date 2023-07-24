@@ -12,12 +12,18 @@ export default function Header() {
   return (
     <header>
       <div>
-        <ul>
+        <img src="" alt="" />
+      </div>
+      <nav className={styles.navbar}>
+        <ul className={styles.navbar__list}>
           <li>
             <a href="#">Home</a>
           </li>
+          <li>
+            <a href="#">Calendar</a>
+          </li>
         </ul>
-      </div>
+      </nav>
       <noscript>
         <style>{`.nojs-show { opacity: 1; top: 0; }`}</style>
       </noscript>
@@ -53,9 +59,9 @@ export default function Header() {
                 />
               )}
               <span className={styles.signedInText}>
-                <small>Signed in as</small>
+                {/* <small>Signed in as</small>
                 <br />
-                <strong>{session.user.email ?? session.user.name}</strong>
+                <strong>{session.user.email ?? session.user.name}</strong> */}
               </span>
               <a
                 href={`/api/auth/signout`}

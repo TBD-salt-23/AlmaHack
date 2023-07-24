@@ -9,12 +9,12 @@
   grid-template-rows: 40% 20% 40%;
   grid-template-areas:
     "taskT . timeStart"
-    ". . timeSpan"
+    "taskD . timeSpan"
     "taskD . timeEnd"
   ;
-  box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.4);
-  -webkit-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
 }
 
 .event__list__heading {
@@ -71,4 +71,17 @@
 
 .event__description {
   grid-area: taskD;
+}
+
+.upcoming__events__empty {
+  width: 50%;
+  color: white;
+  background-color: #FF570A;
+  text-align: center;
+  padding: 10px;
+  border-radius: 1em;
+}
+
+.event__allDay {
+  grid-area: timeStart;
 }

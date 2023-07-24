@@ -77,7 +77,7 @@ input:checked+.slider:before {
 }
 
 .submit__button {
-  background-color: #D72638;
+  background-color: #FFC107;
   color: white;
   border-style: none;
   border-radius: 1em;

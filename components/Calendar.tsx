@@ -41,7 +41,7 @@ const renderEvents = (event: ApiEvent) => {
         <h3 className={styles.event__list__heading}>{event.summary}</h3>
         <p className={styles.event__description}>{event.description}</p>
 
-        <p className={styles.event__from}>
+        <p className={styles.event__allDay}>
           {parseAllDayEvents(new Date(event.start.date).toString())}
         </p>
       </li>
@@ -76,8 +76,8 @@ export default function Calendar(props: CalendarProps) {
   if (!content.length) {
     return (
       <>
-        <h1>Events next week</h1>
-        <p>No upcoming events</p>
+        <h1 className={styles.upcoming__events__heading}>Events next week</h1>
+        <p className={styles.upcoming__events__empty}>No upcoming events</p>
       </>
     );
   }

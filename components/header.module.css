@@ -2,7 +2,19 @@
 .signedInStatus {
   display: block;
   min-height: 4rem;
-  width: 100%;
+  width: 45%;
+
+}
+
+.navbar {
+  flex: 1
+}
+
+.navbar__list {
+  list-style: none;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0
 }
 
 .loading,
@@ -50,6 +62,7 @@
   background-color: white;
   background-size: cover;
   background-repeat: no-repeat;
+  border: 1px solid white;
 }
 
 .button,
@@ -65,7 +78,7 @@
   position: relative;
   z-index: 10;
   background-color: transparent;
-  color: #555;
+  color: white;
 }
 
 .buttonPrimary {
