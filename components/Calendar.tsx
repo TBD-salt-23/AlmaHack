@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { parseTimeNicely, parseAllDayEvents } from '../utils/helpers';
 import { ONE_DAY } from '../utils/consts';
 import styles from './styles/Calendar.module.css';
+import LandingPage from './LandingPage';
 
 type CalendarProps = {
   content: ApiEvent[];
@@ -70,7 +71,8 @@ export default function Calendar(props: CalendarProps) {
   const { data: session } = useSession();
 
   if (!session) {
-    return <AccessDenied />;
+    // return <AccessDenied />;
+    return <LandingPage />;
   }
 
   if (!content.length) {

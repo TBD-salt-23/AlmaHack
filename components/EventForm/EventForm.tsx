@@ -180,6 +180,37 @@ const EventForm = (props: EventFormProps) => {
             required
           ></input>
         </div>
+        <label htmlFor="daysForTasks">Days for tasks</label>
+        <ul>
+          <li>
+            <input id="Monday" type="checkbox" defaultChecked />
+            <label htmlFor="Monday">M</label>
+          </li>
+          <li>
+            <input id="Tuesday" type="checkbox" defaultChecked />
+            <label htmlFor="Tuesday">T</label>
+          </li>
+          <li>
+            <input id="Wednesday" type="checkbox" defaultChecked />
+            <label htmlFor="Wednesday">W</label>
+          </li>
+          <li>
+            <input id="Thursday" type="checkbox" defaultChecked />
+            <label htmlFor="Thursday">T</label>
+          </li>
+          <li>
+            <input id="Friday" type="checkbox" defaultChecked />
+            <label htmlFor="Friday">F</label>
+          </li>
+          <li>
+            <input id="Saturday" type="checkbox" />
+            <label htmlFor="Saturday">S</label>
+          </li>
+          <li>
+            <input id="Sunday" type="checkbox" />
+            <label htmlFor="Sunday">S</label>
+          </li>
+        </ul>
         <label htmlFor="calendarSelect">Calendar</label>
         <div>
           <select
