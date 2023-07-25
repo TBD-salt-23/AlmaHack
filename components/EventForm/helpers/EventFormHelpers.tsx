@@ -220,16 +220,18 @@ export const filterOccupiedSlots = (
         if (freeQuarters.length >= quartersInDuration) {
           const possibleTimeSlot = freeQuarters.slice(
             0,
-            (quartersInDuration - 1) * -1
-          );
-          console.log(
-            'this is the possible time slot we are adding',
-            possibleTimeSlot
+            quartersInDuration * -1 //this guy was briefly (quartersInDuration -1 ) * -1
           );
           unoccupiedSlots.push(possibleTimeSlot);
           console.log(
             'we found a guy! We are adding him! Unoccupied slots looks like this',
-            unoccupiedSlots
+            unoccupiedSlots.map(array =>
+              array.map(timeslot => {
+                return `${new Date(timeslot).getHours()}:${new Date(
+                  timeslot
+                ).getMinutes()} the ${new Date(timeslot).getDate()}`;
+              })
+            )
           );
           freeQuarters = [];
         }

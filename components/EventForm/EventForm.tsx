@@ -164,7 +164,7 @@ const EventForm = (props: EventFormProps) => {
         //   end: body.googleEvent.end.dateTime.getTime(),
         // });
         // const res = await axios.post(`/api/${calendarId}/postEvent`, body);
-        toast.success('Sent ;)');
+        toast.success(`Adding ${title} to your Google Calendar`);
         // console.log(`Here is the res from ${title}`, res);
       }
     } catch (error) {
