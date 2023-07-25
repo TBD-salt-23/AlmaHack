@@ -83,7 +83,7 @@ const EventForm = (props: EventFormProps) => {
   const renderWeekdayOption = (day: WeekDayAndBoolean) => {
     return (
       // </option>
-      <li key={uuid()}>
+      <li key={uuid()} className={styles.event__form__weekday_checkbox}>
         <input
           id="day"
           type="checkbox"
@@ -194,7 +194,7 @@ const EventForm = (props: EventFormProps) => {
         id="inputForm"
       >
         <label>Time Slot</label>
-        <div>
+        <div className={styles.event__form__timeinput}>
           <input
             type="time"
             ref={eventTimeStart}
@@ -214,7 +214,7 @@ const EventForm = (props: EventFormProps) => {
           ></input>
         </div>
         <label htmlFor="daysForTasks">Days for tasks</label>
-        <ul>
+        <ul className={styles.event__form__weekdays__list}>
           {daysForTasks.map((_day, i) => {
             let dayToRender = daysForTasks[i + 1];
             if (i === 6) {
