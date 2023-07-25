@@ -118,11 +118,6 @@ export const filterOccupiedSlots = (
   const aQuarterMiliseconds = 1 * 15 * 60 * 1000;
   const quartersInDuration = durationMiliseconds / aQuarterMiliseconds;
   let freeQuarters = [];
-  console.log(
-    'The expected timeslot for this activity is',
-    quartersInDuration,
-    'in quarters'
-  );
   for (
     let timeSlotIterator = 0;
     timeSlotIterator < possibleTimes.length;
@@ -147,52 +142,19 @@ export const filterOccupiedSlots = (
             0,
             quartersInDuration * -1
           );
-          console.log(
-            'this is after the slice',
-            possibleTimeSlot.map(quarter => {
-              return (
-                new Date(quarter).getHours().toString() +
-                new Date(quarter).getMinutes().toString()
-              );
-            })
-          );
           unoccupiedSlots.push(possibleTimeSlot);
         }
         freeQuarters = [];
-        // break; THIS GUY WAS RECENTLY COMMENTED OUT, IF THERE IS A BIG ISSUE
-        //WITH COLLISON I THINK ADD HIM BACK IN, BUT AS OF RIGHT NOW I DON'T
-        //UNDERSTAND HIS PURPOSE SINCE WE CONTINUE WHEN WE GET OUT OF HERE
       }
     }
     if (slotIsOccupied) {
       confirmedOccupiedSlots.push(currentPosValue);
       continue;
     }
-
     freeQuarters.push(currentPosValue);
     if (timeSlotIterator === possibleTimes.length - 1) {
-      console.log(
-        'on the final loop, free quarters looks like',
-        freeQuarters.map(quarter => {
-          return (
-            new Date(quarter).getHours().toString() +
-            new Date(quarter).getMinutes().toString()
-          );
-        })
-      );
       if (freeQuarters.length >= quartersInDuration) {
         unoccupiedSlots.push(freeQuarters);
-        console.log(
-          `free quarters (${freeQuarters.length}) is now equivalent to the length of the duration in quarters (${quartersInDuration}), adding to unoccupied slots`,
-          unoccupiedSlots.map(slot => {
-            return slot.map(quarter => {
-              return (
-                new Date(quarter).getHours().toString() +
-                new Date(quarter).getMinutes().toString()
-              );
-            });
-          })
-        );
       }
     }
   }

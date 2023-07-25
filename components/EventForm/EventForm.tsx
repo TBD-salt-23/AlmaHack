@@ -4,16 +4,16 @@ import {
   hoursToMiliseconds,
   parseTimeSlotWindowAsUnix as parseTimeSlotWindowAsUnix,
   shuffle,
+  createTimeSlots,
 } from '../../utils/helpers';
 import {
   CalendarResponse,
   StoredValue,
-  WeekDayAndBoolean,
+  WeekdayAndBoolean,
 } from '../../utils/types';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
-import AccessDenied from '../access-denied';
 import {
   filterOccupiedSlots,
   getOccupiedSlots,
@@ -33,7 +33,7 @@ type EventFormProps = {
 };
 let storedValueArray: StoredValue[] = [];
 
-const daysForTasks: WeekDayAndBoolean[] = [
+const daysForTasks: WeekdayAndBoolean[] = [
   { name: 'S', checked: false },
   { name: 'M', checked: true },
   { name: 'T', checked: true },
@@ -73,26 +73,25 @@ const EventForm = (props: EventFormProps) => {
 
   const { data: session } = useSession();
   if (!session) {
-    // return <AccessDenied />;
-    return;
+    return <>{''}</>;
   }
   if (!content.calendarList.length) {
     return <p>Loading....</p>;
   }
 
-  const renderWeekdayOption = (day: WeekDayAndBoolean) => {
+  const renderWeekdayOption = (day: WeekdayAndBoolean) => {
+    const uniqueKey = uuid();
     return (
-      // </option>
-      <li key={uuid()} className={styles.event__form__weekday_checkbox}>
+      <li key={uniqueKey} className={styles.event__form__weekday_checkbox}>
         <input
-          id="day"
+          id={`day_${uniqueKey}`}
           type="checkbox"
           defaultChecked={day.checked}
           onChange={() => {
             day.checked ? (day.checked = false) : (day.checked = true);
           }}
         />
-        <label htmlFor="day">{day.name}</label>
+        <label htmlFor={`day_${uniqueKey}`}>{day.name}</label>
       </li>
     );
   };
@@ -110,6 +109,8 @@ const EventForm = (props: EventFormProps) => {
   };
 
   const occupiedSlots = getOccupiedSlots(eventList);
+  const timeSlotsInQuarters = createTimeSlots();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -193,7 +194,7 @@ const EventForm = (props: EventFormProps) => {
         onSubmit={handleSubmit}
         id="inputForm"
       >
-        <label>Time Slot</label>
+        <label htmlFor="timeSlot">Time Slot</label>
         <div className={styles.event__form__timeinput}>
           <input
             type="time"
@@ -201,8 +202,15 @@ const EventForm = (props: EventFormProps) => {
             min={'00:00'}
             max={'23:59'}
             step={900}
+            id="timeSlot"
+            list="time_list_min"
             required
           ></input>
+          <datalist id="time_list_min">
+            {timeSlotsInQuarters.map(timeslot => (
+              <option value={timeslot} key={uuid()}></option>
+            ))}
+          </datalist>
           <span> - </span>
           <input
             type="time"
@@ -210,10 +218,15 @@ const EventForm = (props: EventFormProps) => {
             min={'00:00'}
             max={'23:59'}
             step={900}
+            list="time_list_max"
             required
           ></input>
+          <datalist id="time_list_max">
+            {timeSlotsInQuarters.map(timeslot => (
+              <option value={timeslot} key={uuid()}></option>
+            ))}
+          </datalist>
         </div>
-        <label htmlFor="daysForTasks">Days for tasks</label>
         <ul className={styles.event__form__weekdays__list}>
           {daysForTasks.map((_day, i) => {
             let dayToRender = daysForTasks[i + 1];
@@ -224,18 +237,18 @@ const EventForm = (props: EventFormProps) => {
           })}
         </ul>
         <label htmlFor="calendarSelect">Calendar</label>
-        <div>
+        <div className={styles.event__form__select__container}>
           <select
             className={styles.event__form__select}
             name=""
             id="calendarSelect"
             ref={eventSelectCalendar}
             value={calendarToRender}
-            onChange={(e) => {
+            onChange={e => {
               handleSelect(e, setCalendarToRender);
             }}
           >
-            {calendarList.map((calendar) => {
+            {calendarList.map(calendar => {
               return (
                 <option key={uuid()} value={calendar.id}>
                   {calendar.summary}

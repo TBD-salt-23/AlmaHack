@@ -89,7 +89,7 @@ export type Slot = {
   end: number;
 };
 
-export type WeekDayAndBoolean = {
+export type WeekdayAndBoolean = {
   name: string;
   checked: boolean;
 };

@@ -1,8 +1,28 @@
 import { DAYS_OF_WEEK } from './consts';
-import { WeekDayAndBoolean } from './types';
+import { WeekdayAndBoolean } from './types';
+
+const returnAsDoubleDigit = (number: number) =>
+  number.toString().length !== 2 ? `0${number}` : `${number}`;
+// {
+//   if (number.toString().length !== 2) {
+//     return `0${number}`;
+//   }
+//   return `${number}`;
+// };
+
+export const createTimeSlots = () => {
+  const timeSlotArray: string[] = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 15) {
+      timeSlotArray.push(`${returnAsDoubleDigit(h)}:${returnAsDoubleDigit(m)}`);
+    }
+  }
+  return timeSlotArray;
+};
+
 export const weekBoundaries = () => {
   const currentDate = new Date();
-  //'2023-07-22T23:59:59.000Z'
+
   const nextWeekStart = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
@@ -39,13 +59,10 @@ export function shuffle(array: any[]) {
   let currentIndex = arrayCopy.length,
     randomIndex;
 
-  // While there remain elements to shuffle.
   while (currentIndex != 0) {
-    // Pick a remaining element.
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex--;
 
-    // And swap it with the current element.
     [arrayCopy[currentIndex], arrayCopy[randomIndex]] = [
       arrayCopy[randomIndex],
       arrayCopy[currentIndex],
@@ -67,7 +84,7 @@ export const parseTimeSlotWindowAsUnix = (
   startWindow: string,
   endWindow: string,
   durationMiliSeconds: number,
-  daysForTasks: WeekDayAndBoolean[]
+  daysForTasks: WeekdayAndBoolean[]
 ) => {
   const [currentDate, nextWeekStart, nextWeekEnd] = weekBoundaries();
 

@@ -1,4 +1,4 @@
-import Calendar from '../components/Calendar';
+import Calendar from '../components/Calendar/Calendar';
 import Layout from '../components/layout';
 import EventForm from '../components/EventForm/EventForm';
 import { useState, useEffect } from 'react';
@@ -42,7 +42,11 @@ export default function IndexPage() {
         setCalendarToRender={setCalendarToRender}
       />
       <section className="upcoming__section">
-        <Calendar content={calendarData.eventList} />
+        <Calendar
+          events={calendarData.eventList}
+          calendarToRender={calendarToRender}
+          fetchCalendarData={fetchCalendarData}
+        />
       </section>
       <ToastContainer />
     </Layout>

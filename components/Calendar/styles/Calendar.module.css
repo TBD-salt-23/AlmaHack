@@ -9,9 +9,9 @@
   grid-template-columns: 60% 30% 10%;
   grid-template-rows: 40% 20% 40%;
   grid-template-areas:
-    'taskTitle timeStart deleteBtn'
-    'taskDescription timeSpan .'
-    'taskDescription timeEnd .';
+    'taskT timeStart deleteBtn'
+    'taskD timeSpan .'
+    'taskD timeEnd .';
   box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
@@ -19,7 +19,7 @@
 
 .event__list__heading {
   text-decoration: underline;
-  grid-area: taskTitle;
+  grid-area: taskT;
 }
 
 .upcoming__events__list {
@@ -38,33 +38,39 @@
 .event__from {
   border-radius: 5px 5px 0 0;
   padding-top: 10px;
+  text-align: center;
+  margin: 0;
   grid-area: timeStart;
+  border: 1px solid white;
   border-bottom: 0;
 }
 
 .event__to {
   border-radius: 0 0 5px 5px;
   padding-top: 10px;
+  text-align: center;
+  margin: 0;
   grid-area: timeEnd;
+  border: 1px solid white;
   border-top: 0;
 }
 
 .spanSpacer {
+  margin: 0;
+  text-align: center;
   grid-area: timeSpan;
+  border: 1px solid white;
   border-block: 0;
 }
 
 .spanSpacer,
 .event__from,
 .event__to {
-  text-align: center;
   padding-inline: 4px;
-  margin: 0;
-  border: 1px solid white;
 }
 
 .event__description {
-  grid-area: taskDescription;
+  grid-area: taskD;
 }
 
 .upcoming__events__empty {

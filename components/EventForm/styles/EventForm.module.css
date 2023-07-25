@@ -1,6 +1,6 @@
 .event__form {
   display: flex;
-  background-color: #FF570A;
+  background-color: #ff570a;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -11,7 +11,7 @@
 }
 
 .section__eventform {
-  background-color: #FF570A;
+  background-color: #ff570a;
   border-radius: 0 0 1em 1em;
 }
 
@@ -22,14 +22,13 @@
 }
 
 .submit__button {
-  background-color: #FFC107;
+  background-color: #ffc107;
   color: white;
   border-style: none;
   border-radius: 1em;
   padding: 0.5em 1em 0.5em 1em;
   margin-top: 1em;
   cursor: pointer;
-
 }
 
 .submit__button:hover {
@@ -55,4 +54,8 @@
 
 .event__form__timeinput {
   margin-block: 0.5em;
+}
+
+.event__form__select__container {
+  margin-top: 0.3em;
 }

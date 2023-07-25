@@ -46,7 +46,6 @@ const getNextWeekFromGoogle = async (
         summary: calendar.summary,
       }));
     const calendarList = [...primaryCalendar, ...ownedCalendars];
-    console.log('calendar list', calendarList);
 
     const eventResponse = await axios.get(`${BASE_URL}/${calendarId}/events`, {
       headers: {
@@ -60,11 +59,6 @@ const getNextWeekFromGoogle = async (
       },
     });
     const eventList = eventResponse.data.items;
-    //
-    // if (data?.nextPageToken) {
-    //   return data.items.concat(await getNextWeekFromGoogle(data.nextPageToken));
-    // }
-
     return { eventList, calendarList };
   } catch (error) {
     console.log(
@@ -73,7 +67,6 @@ const getNextWeekFromGoogle = async (
     );
     if ((error as Error).message === 'Request failed with status code 401')
       console.log('We are in the error conditional');
-    // return { error: 'Error 401! Try signing out and back in :)' };
     throw new Error('Error 401! Try signing out and back in :)');
   }
 };
@@ -82,9 +75,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('HELLO! we are in the funky backend folder');
   const { calendarId } = req.query;
-  console.log('hopefully this is calendar id', calendarId);
 
   const session = await getServerSession(req, res, authOptions);
 
