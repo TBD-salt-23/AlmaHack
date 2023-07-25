@@ -161,86 +161,82 @@ export const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
 
 export const filterOccupiedSlots = (
   occupiedSlots: Slot[],
-  windowAsUnix: number[][],
+  timeframeByDay: number[][],
   durationMiliseconds: number
 ) => {
   let unoccupiedSlots: number[][] = [];
   const confirmedOccupiedSlots = [];
-  const aQuarterMiliseconds = 1 * 15 * 60 * 1000;
-  const quartersInDuration = durationMiliseconds / aQuarterMiliseconds;
-  let freeQuarters = [];
-  console.log('windowasunix.length', windowAsUnix.length);
-
-  for (let dayIterator = 0; dayIterator < windowAsUnix.length; dayIterator++) {
-    for (
-      let timeSlotForDayIterator = 0;
-      timeSlotForDayIterator < windowAsUnix[dayIterator].length;
-      timeSlotForDayIterator++
-    ) {}
-  }
-
-  return;
+  const fifteenMinutesInMiliseconds = 1 * 15 * 60 * 1000;
+  const quartersInDuration = durationMiliseconds / fifteenMinutesInMiliseconds;
+  let freeQuarters: number[] = [];
 
   for (
-    let timeSlotIterator = 0;
-    timeSlotIterator < windowAsUnix.length;
-    timeSlotIterator++
+    let dayIterator = 0;
+    dayIterator < timeframeByDay.length;
+    dayIterator++
   ) {
-    const currentPosValue = windowAsUnix[timeSlotIterator];
-    let slotIsOccupied = false;
-
+    const dayToCheck = timeframeByDay[dayIterator];
     for (
-      let occupiedSlotIterator = 0;
-      occupiedSlotIterator < occupiedSlots.length;
-      occupiedSlotIterator++
+      let timeSlotForDayIterator = 0;
+      timeSlotForDayIterator < dayToCheck.length;
+      timeSlotForDayIterator++
     ) {
-      const currentOccValue = occupiedSlots[occupiedSlotIterator];
-      if (
-        currentPosValue >= currentOccValue.start &&
-        currentPosValue <= currentOccValue.end
+      const currentPosValue = dayToCheck[timeSlotForDayIterator];
+      let slotIsOccupied = false;
+      for (
+        let occupiedSlotIterator = 0;
+        occupiedSlotIterator < occupiedSlots.length;
+        occupiedSlotIterator++
       ) {
-        slotIsOccupied = true;
+        const currentOccValue = occupiedSlots[occupiedSlotIterator];
+        if (
+          currentPosValue >= currentOccValue.start &&
+          currentPosValue <= currentOccValue.end
+        ) {
+          slotIsOccupied = true;
+          if (freeQuarters.length >= quartersInDuration) {
+            const possibleTimeSlot = freeQuarters.slice(
+              0,
+              (quartersInDuration - 1) * -1
+            );
+            unoccupiedSlots.push(possibleTimeSlot);
+          }
+          freeQuarters = [];
+        }
+      }
+      if (slotIsOccupied) {
+        confirmedOccupiedSlots.push(currentPosValue);
+        continue;
+      }
+      freeQuarters.push(currentPosValue);
+      console.log(
+        'after pushing free quarters, it looks like this',
+        freeQuarters.map(timeslot => {
+          return `${new Date(timeslot).getHours()}:${new Date(
+            timeslot
+          ).getMinutes()} the ${new Date(timeslot).getDate()}`;
+        })
+      );
+      if (timeSlotForDayIterator === dayToCheck.length - 1) {
         if (freeQuarters.length >= quartersInDuration) {
           const possibleTimeSlot = freeQuarters.slice(
             0,
-            quartersInDuration * -1
+            (quartersInDuration - 1) * -1
+          );
+          console.log(
+            'this is the possible time slot we are adding',
+            possibleTimeSlot
           );
           unoccupiedSlots.push(possibleTimeSlot);
+          console.log(
+            'we found a guy! We are adding him! Unoccupied slots looks like this',
+            unoccupiedSlots
+          );
+          freeQuarters = [];
         }
-        freeQuarters = [];
       }
     }
-    if (slotIsOccupied) {
-      confirmedOccupiedSlots.push(currentPosValue);
-      continue;
-    }
-    freeQuarters.push(currentPosValue);
-    console.log(
-      'after pushing free quarters, it looks like this',
-      freeQuarters.map(timeslot => {
-        return `${new Date(timeslot).getHours()}:${new Date(
-          timeslot
-        ).getMinutes()} the ${new Date(timeslot).getDate()}`;
-      })
-    );
-    console.log(
-      `This is current pos value ${new Date(
-        currentPosValue
-      ).getHours()}:${new Date(currentPosValue).getMinutes()}`
-    );
-    console.log('this is freeQuartersLength', freeQuarters.length);
-    console.log('this is quarters in duration', quartersInDuration);
-    if (freeQuarters.length >= quartersInDuration) {
-      const possibleTimeSlot = freeQuarters.slice(0, quartersInDuration * -1);
-      unoccupiedSlots.push(possibleTimeSlot);
-      freeQuarters = [];
-    }
-    // if (timeSlotIterator === windowAsUnix.length - 1) {
-    //   if (freeQuarters.length >= quartersInDuration) {
-    //     const possibleTimeSlot = freeQuarters.slice(0, quartersInDuration * -1);
-    //     unoccupiedSlots.push(possibleTimeSlot);
-    //   }
-    // }
   }
+  console.log('these slots are unoccupied before returning', unoccupiedSlots);
   return unoccupiedSlots;
 };
