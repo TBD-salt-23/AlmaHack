@@ -23,11 +23,11 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
   return (
     <>
       <div className={styles['event__form__input-container']}>
-        <label htmlFor={`eventTitle${uuid}`} className={styles.itemA}>
+        <label htmlFor={`eventTitle${uuid}`} className={styles.taskTitle}>
           Task
         </label>
         <input
-          className={styles.itemC}
+          className={styles.taskContent}
           ref={titleRef}
           type="text"
           id={`eventTitle${uuid}`}
@@ -40,22 +40,29 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           }}
         />
 
-        <label htmlFor={`eventDuration${uuid}`} className={styles.itemB}>
+        <label
+          htmlFor={`eventDuration${uuid}`}
+          className={styles.durationTitle}
+        >
           Duration
         </label>
         <input
-          className={styles.itemD}
+          className={styles.durationContent}
           ref={durationRef}
           type="number"
           id={`eventDuration${uuid}`}
           placeholder="Hours..."
           defaultValue={storedValue.duration}
         />
-        <label htmlFor={`eventDescription${uuid}`} className={styles.itemE}>
+
+        <label
+          htmlFor={`eventDescription${uuid}`}
+          className={styles.descriptionT}
+        >
           Description
         </label>
         <input
-          className={styles.itemF}
+          className={styles.descriptionC}
           ref={descriptionRef}
           type="text"
           id={`eventDescription${uuid}`}

@@ -36,7 +36,7 @@ export default function IndexPage() {
   return (
     <Layout>
       <EventForm
-        fetchData={fetchCalendarData}
+        fetchCalendarData={fetchCalendarData}
         content={calendarData}
         calendarToRender={calendarToRender}
         setCalendarToRender={setCalendarToRender}

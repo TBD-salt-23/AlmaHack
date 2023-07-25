@@ -1,16 +1,15 @@
 .landing__info {
-  background-color: #FF5722;
+  background-color: #ff5722;
   color: white;
   text-align: center;
   padding-block: 2em;
   padding-inline: 2em;
   margin-bottom: 2em;
+  max-width: 800px;
 }
 
-.button__login__container {}
-
 .cta__button__login {
-  background-color: #FF5722;
+  background-color: #ff5722;
   border-style: none;
   color: white;
   padding: 1em;
@@ -22,5 +21,11 @@
   text-align: center;
   color: white;
   margin-block: 1.5em;
-  text-shadow: -1px 0 #E64A19, 0 1px #E64A19, 3px 0 #E64A19, 0 -1px #E64A19;
+  text-shadow: -1px 0 #e64a19, 0 1px #e64a19, 3px 0 #e64a19, 0 -1px #e64a19;
+}
+
+@media only screen and (min-width: 600px) {
+  .landing__info {
+    border-radius: 0.5em;
+  }
 }

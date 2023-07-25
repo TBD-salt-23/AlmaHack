@@ -37,6 +37,7 @@ export const getEventType = (event: ApiEvent) => {
       <>
         <p className={styles.event__allDay}>
           {parseAllDayEvents(new Date(event.start.date).toString())}
+          <br /> (All day)
         </p>
       </>
     );

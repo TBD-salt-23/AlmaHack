@@ -12,7 +12,10 @@
 
 .section__eventform {
   background-color: #ff570a;
-  border-radius: 0 0 1em 1em;
+  border-radius: 1em;
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 1em;
 }
 
 .event__form__select {
@@ -22,21 +25,22 @@
 }
 
 .submit__button {
-  background-color: #ffc107;
-  color: white;
+  background-color: rgb(255, 193, 7);
+  color: black;
   border-style: none;
-  border-radius: 1em;
-  padding: 0.5em 1em 0.5em 1em;
+  border-radius: 1.5em;
+  padding: 1em 2em;
   margin-top: 1em;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .submit__button:hover {
-  background-color: #ff2d42;
+  background-color: rgb(255 205 57);
 }
 
 .submit__button:active {
-  background-color: #87020f;
+  background-color: rgba(255, 193, 7, 0.577);
 }
 
 .event__form__weekdays__list {
@@ -58,4 +62,28 @@
 
 .event__form__select__container {
   margin-top: 0.3em;
+}
+
+.event__config__container {
+  border: 1px solid white;
+  padding: 1em;
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.event__form__label__timeinput {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.event__form__label__calendarselect {
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 600px) {
+  .event__form__weekdays__list {
+    gap: 15px;
+  }
 }

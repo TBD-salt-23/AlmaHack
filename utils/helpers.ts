@@ -51,7 +51,7 @@ export const hoursToMiliseconds = (hours: number) => {
 export const parseAllDayEvents = (time: string) =>
   `${DAYS_OF_WEEK[new Date(time).getDay() as keyof typeof DAYS_OF_WEEK]} ${
     new Date(time).getMonth() + 1
-  }/${new Date(time).getDate()} (All day)`;
+  }/${new Date(time).getDate()}`;
 
 export function shuffle(array: any[]) {
   const arrayCopy = [...array];
@@ -95,13 +95,13 @@ export const parseTimeSlotWindowAsUnix = (
 
   const nextWeekStartUnix = nextWeekStart.getTime();
   const nextWeekEndUnix = nextWeekEnd.getTime();
-  const appropriateTimeSlot = [];
-  let newI = 0;
+  const appropriateTimeSlotsPerDay = [];
   for (
     let dayIterator = nextWeekStartUnix;
     dayIterator < nextWeekEndUnix;
     dayIterator += 1000 * 60 * 60 * 24
   ) {
+    const appropriateTimesForThisDay = [];
     const currentWeekday = daysForTasks[new Date(dayIterator).getDay()];
     if (!currentWeekday.checked) {
       continue;
@@ -109,15 +109,18 @@ export const parseTimeSlotWindowAsUnix = (
     for (
       let quarterIterator =
         dayIterator + startWindowUnixHours + startWindowUnixMinutes;
-      quarterIterator <
-      dayIterator +
-        endWindowUnixHours +
-        endWindowUnixMinutes -
-        durationMiliSeconds;
+      quarterIterator <= //IF WE GET OFF BY ONE THEN CHANGE THIS GUY TO BE <
+      dayIterator + endWindowUnixHours + endWindowUnixMinutes;
+      //  - durationMiliSeconds; THIS GUY USED TO BE DEDUCTED FROM THE DAYITERATOR STUFF, BUT I THINK WE ARE FINE RETURNING BIG QUARTERS HERE AND THEN DOING THE LOGIC
       quarterIterator += 15 * 60 * 1000
     ) {
-      appropriateTimeSlot.push(quarterIterator);
+      appropriateTimesForThisDay.push(quarterIterator);
     }
+    appropriateTimeSlotsPerDay.push(appropriateTimesForThisDay);
   }
-  return appropriateTimeSlot;
+  console.log(
+    'this guy should have 5 or so things with a bunch of times',
+    appropriateTimeSlotsPerDay
+  );
+  return appropriateTimeSlotsPerDay;
 };

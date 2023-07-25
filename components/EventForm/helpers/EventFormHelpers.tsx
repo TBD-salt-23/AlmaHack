@@ -1,7 +1,14 @@
-import { Slot, ApiEvent, StoredValue } from '../../../utils/types';
+import {
+  Slot,
+  ApiEvent,
+  StoredValue,
+  WeekdayAndBoolean,
+} from '../../../utils/types';
 import NewEventInfo from '../NewEventInfo';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
+import styles from '../styles/EventForm.module.css';
+import axios from 'axios';
 
 export const handleSelect = (
   e: React.ChangeEvent<HTMLSelectElement>,
@@ -10,6 +17,34 @@ export const handleSelect = (
   if (!e.target.value) return;
   toast.info('Switching calendar!');
   setCalendarToRender(e.target.value);
+};
+
+export const addEventsToGoogleCal = async (
+  startTime: number,
+  endTime: number,
+  title: string,
+  calendarId: string,
+  description: string
+) => {
+  try {
+    const body = {
+      googleEvent: {
+        start: {
+          dateTime: new Date(startTime),
+        },
+        end: {
+          dateTime: new Date(endTime),
+        },
+        summary: title || 'You should have provided a title you numbskull',
+        description,
+      },
+      calendarId,
+    };
+    const res = await axios.post(`/api/${calendarId}/postEvent`, body);
+    console.log('this is the res from the addEventsToGoogleCal', res);
+  } catch (error) {
+    throw new Error((error as Error).message);
+  }
 };
 
 export const parseEventsToAdd = (
@@ -22,12 +57,11 @@ export const parseEventsToAdd = (
 ) => {
   const eventsToAdd = [];
   for (let i = 0; i < inputsToDisplay; i++) {
-    const startWindow = eventTimeStart.current?.value || ''; //TODO: CONSIDER THIS
+    const startWindow = eventTimeStart.current?.value || '';
     const endWindow = eventTimeEnd.current?.value || '';
     const duration = durationArr.current[i].value;
     const title = titleArr.current[i].value;
     const description = descriptionArr.current[i].value || '';
-
     if (duration && title) {
       eventsToAdd.push({
         startWindow,
@@ -52,6 +86,23 @@ const makeOrFindUuid = (i: number) => {
     return KEY_ARRAY[i];
   }
   return uuid();
+};
+
+export const renderWeekdayOption = (day: WeekdayAndBoolean) => {
+  const uniqueKey = uuid();
+  return (
+    <li key={uniqueKey} className={styles.event__form__weekday_checkbox}>
+      <input
+        id={`day_${uniqueKey}`}
+        type="checkbox"
+        defaultChecked={day.checked}
+        onChange={() => {
+          day.checked ? (day.checked = false) : (day.checked = true);
+        }}
+      />
+      <label htmlFor={`day_${uniqueKey}`}>{day.name}</label>
+    </li>
+  );
 };
 
 export const returnNewEventInfo = (
@@ -110,7 +161,7 @@ export const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
 
 export const filterOccupiedSlots = (
   occupiedSlots: Slot[],
-  possibleTimes: number[],
+  windowAsUnix: number[][],
   durationMiliseconds: number
 ) => {
   let unoccupiedSlots: number[][] = [];
@@ -118,12 +169,24 @@ export const filterOccupiedSlots = (
   const aQuarterMiliseconds = 1 * 15 * 60 * 1000;
   const quartersInDuration = durationMiliseconds / aQuarterMiliseconds;
   let freeQuarters = [];
+  console.log('windowasunix.length', windowAsUnix.length);
+
+  for (let dayIterator = 0; dayIterator < windowAsUnix.length; dayIterator++) {
+    for (
+      let timeSlotForDayIterator = 0;
+      timeSlotForDayIterator < windowAsUnix[dayIterator].length;
+      timeSlotForDayIterator++
+    ) {}
+  }
+
+  return;
+
   for (
     let timeSlotIterator = 0;
-    timeSlotIterator < possibleTimes.length;
+    timeSlotIterator < windowAsUnix.length;
     timeSlotIterator++
   ) {
-    const currentPosValue = possibleTimes[timeSlotIterator];
+    const currentPosValue = windowAsUnix[timeSlotIterator];
     let slotIsOccupied = false;
 
     for (
@@ -152,11 +215,32 @@ export const filterOccupiedSlots = (
       continue;
     }
     freeQuarters.push(currentPosValue);
-    if (timeSlotIterator === possibleTimes.length - 1) {
-      if (freeQuarters.length >= quartersInDuration) {
-        unoccupiedSlots.push(freeQuarters);
-      }
+    console.log(
+      'after pushing free quarters, it looks like this',
+      freeQuarters.map(timeslot => {
+        return `${new Date(timeslot).getHours()}:${new Date(
+          timeslot
+        ).getMinutes()} the ${new Date(timeslot).getDate()}`;
+      })
+    );
+    console.log(
+      `This is current pos value ${new Date(
+        currentPosValue
+      ).getHours()}:${new Date(currentPosValue).getMinutes()}`
+    );
+    console.log('this is freeQuartersLength', freeQuarters.length);
+    console.log('this is quarters in duration', quartersInDuration);
+    if (freeQuarters.length >= quartersInDuration) {
+      const possibleTimeSlot = freeQuarters.slice(0, quartersInDuration * -1);
+      unoccupiedSlots.push(possibleTimeSlot);
+      freeQuarters = [];
     }
+    // if (timeSlotIterator === windowAsUnix.length - 1) {
+    //   if (freeQuarters.length >= quartersInDuration) {
+    //     const possibleTimeSlot = freeQuarters.slice(0, quartersInDuration * -1);
+    //     unoccupiedSlots.push(possibleTimeSlot);
+    //   }
+    // }
   }
   return unoccupiedSlots;
 };

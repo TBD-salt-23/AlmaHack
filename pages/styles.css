@@ -8,9 +8,8 @@ body {
   color: #333;
   padding: 0;
   box-sizing: border-box;
-  max-width: 800px;
   margin: 0 auto;
-  background-color: #FFBF69;
+  background-color: #ffbf69;
 }
 
 .upcoming__section {
@@ -29,8 +28,10 @@ input {
 
 header {
   display: flex;
-  background-color: #E64A19;
+  background-color: #e64a19;
   align-items: center;
+  position: sticky;
+  top: 0;
 }
 
 li,

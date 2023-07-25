@@ -15,10 +15,10 @@
   box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
+  max-width: 750px;
 }
 
 .event__list__heading {
-  text-decoration: underline;
   grid-area: taskT;
 }
 

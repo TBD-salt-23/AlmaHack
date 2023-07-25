@@ -1,20 +1,21 @@
 .footer {
   margin-top: 2rem;
+  background-color: black;
 }
 
 .navItems {
-  margin-bottom: 1rem;
   padding: 0;
   list-style: none;
   text-align: center;
   color: #757575;
+  margin: 0;
 }
 
 .navItem {
+  margin-block: 1em;
   display: inline-block;
-  margin-right: 1rem;
 }
 
 .contactLink {
-  color: #E64A19
+  color: #e64a19;
 }

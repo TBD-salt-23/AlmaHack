@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions, User } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
-// import { Account } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 
 const GOOGLE_AUTHORIZATION_URL =
@@ -46,7 +45,7 @@ async function refreshAccessToken(token: any) {
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken, // Fall back to old refresh token
     };
   } catch (error) {
-    console.log(error);
+    throw new Error((error as Error).message);
 
     return {
       ...token,
@@ -78,20 +77,17 @@ export const authOptions: NextAuthOptions = {
     colorScheme: 'dark',
   },
   events: {
-    signIn(message) {
-      // console.log('signin message', message);
-    },
+    signIn(message) {},
   },
   session: {
     strategy: 'jwt',
   },
   jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user, account }) {
       // Initial sign in
-      console.log('this is user in the jwt callback', user);
       if (account && user) {
         console.log(
           'This is the account, this is where we hope the refresh token is',
@@ -125,14 +121,6 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    // async jwt({ token, user, account, profile }) {
-    //   token.userRole = 'admin';
-    //   if (account) {
-    //     token.accessToken = account.access_token;
-    //     token.id = user.id;
-    //   }
-    //   return token;
-    // },
   },
 };
 

@@ -93,3 +93,11 @@ export type WeekdayAndBoolean = {
   name: string;
   checked: boolean;
 };
+
+export type EventsToAdd = {
+  startWindow: string;
+  endWindow: string;
+  duration: string;
+  title: string;
+  description: string;
+};

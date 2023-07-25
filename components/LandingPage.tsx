@@ -29,7 +29,7 @@ const LandingPage = () => {
           >
             Sign in
           </a>
-          to get started!
+          &nbsp;to get started!
         </p>
       </div>
     </>

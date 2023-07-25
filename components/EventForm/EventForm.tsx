@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   hoursToMiliseconds,
-  parseTimeSlotWindowAsUnix as parseTimeSlotWindowAsUnix,
+  parseTimeSlotWindowAsUnix,
   shuffle,
   createTimeSlots,
 } from '../../utils/helpers';
@@ -10,6 +10,7 @@ import {
   CalendarResponse,
   StoredValue,
   WeekdayAndBoolean,
+  EventsToAdd,
 } from '../../utils/types';
 import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
@@ -20,20 +21,23 @@ import {
   parseEventsToAdd,
   returnNewEventInfo,
   handleSelect,
+  renderWeekdayOption,
+  addEventsToGoogleCal,
 } from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
+import { time } from 'console';
 
 //TODO: IMPLEMENT TOASTIFY FOR ERROR HANDLING
 
 type EventFormProps = {
-  fetchData: (calendarId: string) => Promise<void>;
+  fetchCalendarData: (calendarId: string) => Promise<void>;
   content: CalendarResponse;
   setCalendarToRender: (calendarToRender: string) => void;
   calendarToRender: string;
 };
 let storedValueArray: StoredValue[] = [];
 
-const daysForTasks: WeekdayAndBoolean[] = [
+const weekdaysAvailable: WeekdayAndBoolean[] = [
   { name: 'S', checked: false },
   { name: 'M', checked: true },
   { name: 'T', checked: true },
@@ -44,9 +48,12 @@ const daysForTasks: WeekdayAndBoolean[] = [
 ];
 
 const EventForm = (props: EventFormProps) => {
-  const { fetchData, content, setCalendarToRender, calendarToRender } = props;
+  const { fetchCalendarData, content, setCalendarToRender, calendarToRender } =
+    props;
   const { eventList, calendarList } = content;
+  const { data: session } = useSession();
   const [inputsToDisplay, setInputsToDisplay] = useState(1);
+  storedValueArray.length = inputsToDisplay;
 
   const eventTimeStart = useRef<HTMLInputElement>(null);
   const eventTimeEnd = useRef<HTMLInputElement>(null);
@@ -55,46 +62,11 @@ const EventForm = (props: EventFormProps) => {
   const durationArr = useRef<HTMLInputElement[]>([]);
   const descriptionArr = useRef<HTMLInputElement[]>([]);
 
-  storedValueArray.length = inputsToDisplay;
   useEffect(() => {
     if (inputsToDisplay > 1) {
       titleArr.current[inputsToDisplay - 2].focus();
     }
   }, [inputsToDisplay]);
-  // useEffect(() => {
-  //   // titleArr.current = titleArr.current.slice(0, inputsToDisplay);
-  //   // durationArr.current = durationArr.current.slice(0, inputsToDisplay);
-  //   // console.log(
-  //   //   'this is what these guys look like',
-  //   //   titleArr.current,
-  //   //   durationArr.current
-  //   // );
-  // }, []);
-
-  const { data: session } = useSession();
-  if (!session) {
-    return <>{''}</>;
-  }
-  if (!content.calendarList.length) {
-    return <p>Loading....</p>;
-  }
-
-  const renderWeekdayOption = (day: WeekdayAndBoolean) => {
-    const uniqueKey = uuid();
-    return (
-      <li key={uniqueKey} className={styles.event__form__weekday_checkbox}>
-        <input
-          id={`day_${uniqueKey}`}
-          type="checkbox"
-          defaultChecked={day.checked}
-          onChange={() => {
-            day.checked ? (day.checked = false) : (day.checked = true);
-          }}
-        />
-        <label htmlFor={`day_${uniqueKey}`}>{day.name}</label>
-      </li>
-    );
-  };
 
   const incrementInputLines = () => {
     for (let i = 0; i < inputsToDisplay; i++) {
@@ -108,12 +80,102 @@ const EventForm = (props: EventFormProps) => {
     setInputsToDisplay(inputsToDisplay + 1);
   };
 
-  const occupiedSlots = getOccupiedSlots(eventList);
-  const timeSlotsInQuarters = createTimeSlots();
+  if (!session) {
+    return <>{''}</>;
+  }
+  if (!content.calendarList.length) {
+    return <p>Loading....</p>;
+  }
+
+  const addEvents = async (calendarId: string, eventsToAdd: EventsToAdd[]) => {
+    const occupiedSlots = getOccupiedSlots(eventList); // THIS GUY WAS OUTSIDE THIS FUNCTION BEFORE NOT SURE IF IT MAKES SENSE TO MOVE HIM IN
+
+    for (let i = 0; i < eventsToAdd.length; i++) {
+      const { startWindow, endWindow, duration, title, description } =
+        eventsToAdd[i];
+      if (!endWindow || !startWindow || !duration || !title) {
+        toast.error('Please fill our all the required fields :)');
+        return;
+      }
+      if (startWindow >= endWindow) {
+        toast.error('Start time must be earlier than end time');
+        return;
+      }
+      const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
+      const windowAsUnix = parseTimeSlotWindowAsUnix(
+        startWindow,
+        endWindow,
+        durationMiliseconds,
+        weekdaysAvailable
+      );
+      console.log(
+        'this is windowAsUnix',
+        windowAsUnix.map(slotArray =>
+          slotArray.map(
+            timeslot =>
+              `${new Date(timeslot).getHours()}:${new Date(
+                timeslot
+              ).getMinutes()} the ${new Date(timeslot).getDate()}`
+          )
+        )
+      );
+      const unoccupiedSlots = filterOccupiedSlots(
+        occupiedSlots,
+        windowAsUnix,
+        durationMiliseconds
+      );
+      console.log(
+        'these timeslots are considered unoccupied',
+        unoccupiedSlots.map(slotArray =>
+          slotArray.map(
+            timeslot =>
+              `${new Date(timeslot).getHours()}:${new Date(
+                timeslot
+              ).getMinutes()} the ${new Date(timeslot).getDate()}`
+          )
+        )
+      );
+      console.log('these are considered occupied', occupiedSlots);
+      if (!unoccupiedSlots.length) {
+        toast.warn("Couldn't find time slot for " + title);
+        return;
+      }
+
+      const [possibleQuarters] = shuffle(unoccupiedSlots) as number[][];
+      const [startTime] = shuffle(possibleQuarters) as number[];
+      if (!startTime) {
+        toast.warn("Couldn't find time for " + title);
+        console.log(`The start time for ${title} is ${startTime}`);
+        return;
+      }
+      const endTime = startTime + durationMiliseconds;
+
+      await addEventsToGoogleCal(
+        startTime,
+        endTime,
+        title,
+        calendarId,
+        description
+      );
+
+      occupiedSlots.push({
+        start: startTime,
+        end: endTime,
+      });
+
+      // occupiedSlots.push({ THIS GUY MAYBE IS SUPER NECESSARY I HAVE CHANGED HIM TO WHAT IS ABOVE
+      //   start: body.googleEvent.start.dateTime.getTime(),
+      //   end: body.googleEvent.end.dateTime.getTime(),
+      // });
+      // const res = await axios.post(`/api/${calendarId}/postEvent`, body);
+      toast.success('Sent ;)');
+      // console.log(`Here is the res from ${title}`, res);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    const calendarId = eventSelectCalendar.current?.value || 'primary';
     const eventsToAdd = parseEventsToAdd(
       inputsToDisplay,
       eventTimeStart,
@@ -122,69 +184,10 @@ const EventForm = (props: EventFormProps) => {
       titleArr,
       descriptionArr
     );
-
-    eventsToAdd.forEach(
-      async ({ startWindow, endWindow, duration, title, description }) => {
-        if (!endWindow || !startWindow || !duration || !title) {
-          toast.error('Please fill our all the required fields :)');
-          return;
-        }
-        if (startWindow >= endWindow) {
-          toast.error('Start time must be earlier than end time');
-          return;
-        }
-        const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
-        const windowAsUnix = parseTimeSlotWindowAsUnix(
-          startWindow,
-          endWindow,
-          durationMiliseconds,
-          daysForTasks
-        );
-        const unoccupiedSlots = filterOccupiedSlots(
-          occupiedSlots,
-          windowAsUnix,
-          durationMiliseconds
-        );
-        if (!unoccupiedSlots.length) {
-          toast.warn("Couldn't find time slot for " + title);
-          return;
-        }
-        const [possibleQuarters] = shuffle(unoccupiedSlots);
-        const [startTime] = shuffle(possibleQuarters);
-        if (!startTime) {
-          toast.warn("Couldn't find time for " + title);
-          console.log('this is start time', startTime);
-          return;
-        }
-        const endTime = startTime + durationMiliseconds;
-        const calendarId = eventSelectCalendar.current?.value || 'primary';
-        const body = {
-          googleEvent: {
-            start: {
-              dateTime: new Date(startTime),
-              // timeZone: 'Europe/Stockholm',
-            },
-            end: {
-              dateTime: new Date(endTime),
-              // timeZone: 'Europe/Stockholm',
-            },
-            summary: title || 'You should have provided a title you numbskull',
-            description,
-          },
-          calendarId,
-        };
-        occupiedSlots.push({
-          start: body.googleEvent.start.dateTime.getTime(),
-          end: body.googleEvent.end.dateTime.getTime(),
-        });
-        const res = await axios.post(`/api/${calendarId}/postEvent`, body);
-        toast.success('Sent ;)');
-        console.log('this is the res from the onclick button', res);
-        await fetchData(calendarId);
-        storedValueArray = [];
-        setInputsToDisplay(1);
-      }
-    );
+    await addEvents(calendarId, eventsToAdd);
+    await fetchCalendarData(calendarId);
+    storedValueArray = [];
+    setInputsToDisplay(1);
   };
 
   return (
@@ -194,68 +197,80 @@ const EventForm = (props: EventFormProps) => {
         onSubmit={handleSubmit}
         id="inputForm"
       >
-        <label htmlFor="timeSlot">Time Slot</label>
-        <div className={styles.event__form__timeinput}>
-          <input
-            type="time"
-            ref={eventTimeStart}
-            min={'00:00'}
-            max={'23:59'}
-            step={900}
-            id="timeSlot"
-            list="time_list_min"
-            required
-          ></input>
-          <datalist id="time_list_min">
-            {timeSlotsInQuarters.map(timeslot => (
-              <option value={timeslot} key={uuid()}></option>
-            ))}
-          </datalist>
-          <span> - </span>
-          <input
-            type="time"
-            ref={eventTimeEnd}
-            min={'00:00'}
-            max={'23:59'}
-            step={900}
-            list="time_list_max"
-            required
-          ></input>
-          <datalist id="time_list_max">
-            {timeSlotsInQuarters.map(timeslot => (
-              <option value={timeslot} key={uuid()}></option>
-            ))}
-          </datalist>
-        </div>
-        <ul className={styles.event__form__weekdays__list}>
-          {daysForTasks.map((_day, i) => {
-            let dayToRender = daysForTasks[i + 1];
-            if (i === 6) {
-              dayToRender = daysForTasks[0];
-            }
-            return renderWeekdayOption(dayToRender);
-          })}
-        </ul>
-        <label htmlFor="calendarSelect">Calendar</label>
-        <div className={styles.event__form__select__container}>
-          <select
-            className={styles.event__form__select}
-            name=""
-            id="calendarSelect"
-            ref={eventSelectCalendar}
-            value={calendarToRender}
-            onChange={e => {
-              handleSelect(e, setCalendarToRender);
-            }}
+        <div className={styles.event__config__container}>
+          <label
+            className={styles.event__form__label__timeinput}
+            htmlFor="timeSlot"
           >
-            {calendarList.map(calendar => {
-              return (
-                <option key={uuid()} value={calendar.id}>
-                  {calendar.summary}
-                </option>
-              );
+            Time Slot
+          </label>
+          <div className={styles.event__form__timeinput}>
+            <input
+              type="time"
+              ref={eventTimeStart}
+              min={'00:00'}
+              max={'23:59'}
+              step={900}
+              id="timeSlot"
+              list="time_list_min"
+              required
+            ></input>
+            <datalist id="time_list_min">
+              {createTimeSlots().map(timeslot => (
+                <option value={timeslot} key={uuid()}></option>
+              ))}
+            </datalist>
+            <span> - </span>
+            <input
+              type="time"
+              ref={eventTimeEnd}
+              min={'00:00'}
+              max={'23:59'}
+              step={900}
+              list="time_list_max"
+              required
+            ></input>
+            <datalist id="time_list_max">
+              {createTimeSlots().map(timeslot => (
+                <option value={timeslot} key={uuid()}></option>
+              ))}
+            </datalist>
+          </div>
+          <ul className={styles.event__form__weekdays__list}>
+            {weekdaysAvailable.map((_day, i) => {
+              let dayToRender = weekdaysAvailable[i + 1];
+              if (i === 6) {
+                dayToRender = weekdaysAvailable[0];
+              }
+              return renderWeekdayOption(dayToRender);
             })}
-          </select>
+          </ul>
+          <label
+            className={styles.event__form__label__calendarselect}
+            htmlFor="calendarSelect"
+          >
+            Calendar
+          </label>
+          <div className={styles.event__form__select__container}>
+            <select
+              className={styles.event__form__select}
+              name=""
+              id="calendarSelect"
+              ref={eventSelectCalendar}
+              value={calendarToRender}
+              onChange={e => {
+                handleSelect(e, setCalendarToRender);
+              }}
+            >
+              {calendarList.map(calendar => {
+                return (
+                  <option key={uuid()} value={calendar.id}>
+                    {calendar.summary}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
         </div>
         {returnNewEventInfo(
           titleArr,
