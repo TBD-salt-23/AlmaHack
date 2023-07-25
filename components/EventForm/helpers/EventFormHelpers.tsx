@@ -73,8 +73,7 @@ export const parseEventsToAdd = (
     }
   }
   if (eventsToAdd.length === 0) {
-    toast.warn('Task name and duration are required!');
-    return eventsToAdd;
+    throw new Error('Task name and duration are required!');
   }
   return eventsToAdd;
 };

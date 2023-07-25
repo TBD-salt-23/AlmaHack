@@ -25,7 +25,6 @@ import {
   addEventsToGoogleCal,
 } from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
-import { time } from 'console';
 
 //TODO: IMPLEMENT TOASTIFY FOR ERROR HANDLING
 
@@ -88,106 +87,111 @@ const EventForm = (props: EventFormProps) => {
   }
 
   const addEvents = async (calendarId: string, eventsToAdd: EventsToAdd[]) => {
-    const occupiedSlots = getOccupiedSlots(eventList); // THIS GUY WAS OUTSIDE THIS FUNCTION BEFORE NOT SURE IF IT MAKES SENSE TO MOVE HIM IN
+    try {
+      const occupiedSlots = getOccupiedSlots(eventList); // THIS GUY WAS OUTSIDE THIS FUNCTION BEFORE NOT SURE IF IT MAKES SENSE TO MOVE HIM IN
 
-    for (let i = 0; i < eventsToAdd.length; i++) {
-      const { startWindow, endWindow, duration, title, description } =
-        eventsToAdd[i];
-      if (!endWindow || !startWindow || !duration || !title) {
-        toast.error('Please fill our all the required fields :)');
-        return;
-      }
-      if (startWindow >= endWindow) {
-        toast.error('Start time must be earlier than end time');
-        return;
-      }
-      const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
-      const windowAsUnix = parseTimeSlotWindowAsUnix(
-        startWindow,
-        endWindow,
-        durationMiliseconds,
-        weekdaysAvailable
-      );
-      console.log(
-        'this is windowAsUnix',
-        windowAsUnix.map(slotArray =>
-          slotArray.map(
-            timeslot =>
-              `${new Date(timeslot).getHours()}:${new Date(
-                timeslot
-              ).getMinutes()} the ${new Date(timeslot).getDate()}`
+      for (let i = 0; i < eventsToAdd.length; i++) {
+        const { startWindow, endWindow, duration, title, description } =
+          eventsToAdd[i];
+        if (!endWindow || !startWindow || !duration || !title) {
+          throw new Error('Please fill our all the required fields :)');
+        }
+        if (startWindow >= endWindow) {
+          throw new Error('Start time must be earlier than end time');
+        }
+        const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
+        const windowAsUnix = parseTimeSlotWindowAsUnix(
+          startWindow,
+          endWindow,
+          durationMiliseconds,
+          weekdaysAvailable
+        );
+        console.log(
+          'this is windowAsUnix',
+          windowAsUnix.map(slotArray =>
+            slotArray.map(
+              timeslot =>
+                `${new Date(timeslot).getHours()}:${new Date(
+                  timeslot
+                ).getMinutes()} the ${new Date(timeslot).getDate()}`
+            )
           )
-        )
-      );
-      const unoccupiedSlots = filterOccupiedSlots(
-        occupiedSlots,
-        windowAsUnix,
-        durationMiliseconds
-      );
-      console.log(
-        'these timeslots are considered unoccupied',
-        unoccupiedSlots.map(slotArray =>
-          slotArray.map(
-            timeslot =>
-              `${new Date(timeslot).getHours()}:${new Date(
-                timeslot
-              ).getMinutes()} the ${new Date(timeslot).getDate()}`
+        );
+        const unoccupiedSlots = filterOccupiedSlots(
+          occupiedSlots,
+          windowAsUnix,
+          durationMiliseconds
+        );
+        console.log(
+          'these timeslots are considered unoccupied',
+          unoccupiedSlots.map(slotArray =>
+            slotArray.map(
+              timeslot =>
+                `${new Date(timeslot).getHours()}:${new Date(
+                  timeslot
+                ).getMinutes()} the ${new Date(timeslot).getDate()}`
+            )
           )
-        )
-      );
-      console.log('these are considered occupied', occupiedSlots);
-      if (!unoccupiedSlots.length) {
-        toast.warn("Couldn't find time slot for " + title);
-        return;
+        );
+        console.log('these are considered occupied', occupiedSlots);
+        if (!unoccupiedSlots.length) {
+          throw new Error(`Couldn't find time slot for ${title}`);
+        }
+
+        const [possibleQuarters] = shuffle(unoccupiedSlots) as number[][];
+        const [startTime] = shuffle(possibleQuarters) as number[];
+        if (!startTime) {
+          console.log(`The start time for ${title} is ${startTime}`);
+          throw new Error(`Couldn't find time for ${title}`);
+        }
+        const endTime = startTime + durationMiliseconds;
+
+        await addEventsToGoogleCal(
+          startTime,
+          endTime,
+          title,
+          calendarId,
+          description
+        );
+
+        occupiedSlots.push({
+          start: startTime,
+          end: endTime,
+        });
+
+        // occupiedSlots.push({ THIS GUY MAYBE IS SUPER NECESSARY I HAVE CHANGED HIM TO WHAT IS ABOVE
+        //   start: body.googleEvent.start.dateTime.getTime(),
+        //   end: body.googleEvent.end.dateTime.getTime(),
+        // });
+        // const res = await axios.post(`/api/${calendarId}/postEvent`, body);
+        toast.success('Sent ;)');
+        // console.log(`Here is the res from ${title}`, res);
       }
-
-      const [possibleQuarters] = shuffle(unoccupiedSlots) as number[][];
-      const [startTime] = shuffle(possibleQuarters) as number[];
-      if (!startTime) {
-        toast.warn("Couldn't find time for " + title);
-        console.log(`The start time for ${title} is ${startTime}`);
-        return;
-      }
-      const endTime = startTime + durationMiliseconds;
-
-      await addEventsToGoogleCal(
-        startTime,
-        endTime,
-        title,
-        calendarId,
-        description
-      );
-
-      occupiedSlots.push({
-        start: startTime,
-        end: endTime,
-      });
-
-      // occupiedSlots.push({ THIS GUY MAYBE IS SUPER NECESSARY I HAVE CHANGED HIM TO WHAT IS ABOVE
-      //   start: body.googleEvent.start.dateTime.getTime(),
-      //   end: body.googleEvent.end.dateTime.getTime(),
-      // });
-      // const res = await axios.post(`/api/${calendarId}/postEvent`, body);
-      toast.success('Sent ;)');
-      // console.log(`Here is the res from ${title}`, res);
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const calendarId = eventSelectCalendar.current?.value || 'primary';
-    const eventsToAdd = parseEventsToAdd(
-      inputsToDisplay,
-      eventTimeStart,
-      eventTimeEnd,
-      durationArr,
-      titleArr,
-      descriptionArr
-    );
-    await addEvents(calendarId, eventsToAdd);
-    await fetchCalendarData(calendarId);
-    storedValueArray = [];
-    setInputsToDisplay(1);
+    try {
+      e.preventDefault();
+      const calendarId = eventSelectCalendar.current?.value || 'primary';
+      const eventsToAdd = parseEventsToAdd(
+        inputsToDisplay,
+        eventTimeStart,
+        eventTimeEnd,
+        durationArr,
+        titleArr,
+        descriptionArr
+      );
+      await addEvents(calendarId, eventsToAdd);
+      await fetchCalendarData(calendarId);
+      storedValueArray = [];
+      setInputsToDisplay(1);
+    } catch (error) {
+      console.log('this is the erorr', (error as Error).message);
+      toast.warn((error as Error).message);
+    }
   };
 
   return (
