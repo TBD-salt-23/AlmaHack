@@ -9,6 +9,8 @@ import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import styles from '../styles/EventForm.module.css';
 import axios from 'axios';
+import { fifteenMinutesInMiliseconds } from './constants';
+import { weekBoundaries } from '../../../utils/helpers';
 
 export const handleSelect = (
   e: React.ChangeEvent<HTMLSelectElement>,
@@ -153,7 +155,8 @@ export const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
   return content.map(event => {
     return {
       start: new Date(event.start.dateTime).getTime(),
-      end: new Date(event.end.dateTime).getTime(),
+      // end: new Date(event.end.dateTime).getTime(),
+      end: new Date(event.end.dateTime).getTime() - fifteenMinutesInMiliseconds,
     };
   });
 };
@@ -165,15 +168,15 @@ export const filterOccupiedSlots = (
 ) => {
   let unoccupiedSlots: number[][] = [];
   const confirmedOccupiedSlots = [];
-  const fifteenMinutesInMiliseconds = 1 * 15 * 60 * 1000;
   const quartersInDuration = durationMiliseconds / fifteenMinutesInMiliseconds;
-  let freeQuarters: number[] = [];
+  // let freeQuartersByWeek: number[][] = []; //consider this guy
 
   for (
     let dayIterator = 0;
     dayIterator < timeframeByDay.length;
     dayIterator++
   ) {
+    let freeQuartersByDay: number[] = [];
     const dayToCheck = timeframeByDay[dayIterator];
     for (
       let timeSlotForDayIterator = 0;
@@ -193,32 +196,32 @@ export const filterOccupiedSlots = (
           currentPosValue <= currentOccValue.end
         ) {
           slotIsOccupied = true;
-          if (freeQuarters.length >= quartersInDuration) {
-            const possibleTimeSlot = freeQuarters.slice(
+          if (freeQuartersByDay.length >= quartersInDuration) {
+            const possibleTimeSlot = freeQuartersByDay.slice(
               0,
               (quartersInDuration - 1) * -1
             );
             unoccupiedSlots.push(possibleTimeSlot);
           }
-          freeQuarters = [];
+          freeQuartersByDay = [];
         }
       }
       if (slotIsOccupied) {
         confirmedOccupiedSlots.push(currentPosValue);
         continue;
       }
-      freeQuarters.push(currentPosValue);
+      freeQuartersByDay.push(currentPosValue);
       console.log(
         'after pushing free quarters, it looks like this',
-        freeQuarters.map(timeslot => {
+        freeQuartersByDay.map(timeslot => {
           return `${new Date(timeslot).getHours()}:${new Date(
             timeslot
           ).getMinutes()} the ${new Date(timeslot).getDate()}`;
         })
       );
       if (timeSlotForDayIterator === dayToCheck.length - 1) {
-        if (freeQuarters.length >= quartersInDuration) {
-          const possibleTimeSlot = freeQuarters.slice(
+        if (freeQuartersByDay.length >= quartersInDuration) {
+          const possibleTimeSlot = freeQuartersByDay.slice(
             0,
             quartersInDuration * -1 //this guy was briefly (quartersInDuration -1 ) * -1
           );
@@ -233,11 +236,61 @@ export const filterOccupiedSlots = (
               })
             )
           );
-          freeQuarters = [];
+          freeQuartersByDay = [];
         }
       }
     }
   }
   console.log('these slots are unoccupied before returning', unoccupiedSlots);
   return unoccupiedSlots;
+};
+
+const hoursMinutesToUnix = (timeWindow: string) => {
+  if (timeWindow.length !== 5) {
+    throw new Error('Somehow this time is the wrong amount of characters');
+  }
+  const timeWindowHours = parseInt(timeWindow.substring(0, 2)) * 60 * 60 * 1000;
+  const timeWindowMinutes = parseInt(timeWindow.substring(3, 5)) * 60 * 1000;
+  return [timeWindowHours, timeWindowMinutes];
+};
+
+export const parseTimeSlotWindowAsUnix = (
+  startWindow: string,
+  endWindow: string,
+  durationMiliSeconds: number,
+  daysForTasks: WeekdayAndBoolean[]
+) => {
+  const [currentDate, nextWeekStart, nextWeekEnd] = weekBoundaries();
+
+  const [startWindowUnixHours, startWindowUnixMinutes] =
+    hoursMinutesToUnix(startWindow);
+  const [endWindowUnixHours, endWindowUnixMinutes] =
+    hoursMinutesToUnix(endWindow);
+
+  const nextWeekStartUnix = nextWeekStart.getTime();
+  const nextWeekEndUnix = nextWeekEnd.getTime();
+  const appropriateTimeSlotsPerDay = [];
+  for (
+    let dayIterator = nextWeekStartUnix;
+    dayIterator < nextWeekEndUnix;
+    dayIterator += 1000 * 60 * 60 * 24
+  ) {
+    const appropriateTimesForThisDay = [];
+    const currentWeekday = daysForTasks[new Date(dayIterator).getDay()];
+    if (!currentWeekday.checked) {
+      continue;
+    }
+    for (
+      let quarterIterator =
+        dayIterator + startWindowUnixHours + startWindowUnixMinutes;
+      quarterIterator <= //IF WE GET OFF BY ONE THEN CHANGE THIS GUY TO BE <
+      dayIterator + endWindowUnixHours + endWindowUnixMinutes;
+      //  - durationMiliSeconds; THIS GUY USED TO BE DEDUCTED FROM THE DAYITERATOR STUFF, BUT I THINK WE ARE FINE RETURNING BIG QUARTERS HERE AND THEN DOING THE LOGIC
+      quarterIterator += 15 * 60 * 1000
+    ) {
+      appropriateTimesForThisDay.push(quarterIterator);
+    }
+    appropriateTimeSlotsPerDay.push(appropriateTimesForThisDay);
+  }
+  return appropriateTimeSlotsPerDay;
 };

@@ -68,8 +68,6 @@ const getNextWeekFromGoogle = async (
     if ((error as Error).message === 'Request failed with status code 401')
       console.log('We are in the error conditional');
     throw new Error('Error 401! Try signing out and back in :)');
-
-    throw new Error((error as Error).message);
   }
 };
 

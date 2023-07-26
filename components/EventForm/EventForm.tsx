@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   hoursToMiliseconds,
-  parseTimeSlotWindowAsUnix,
   shuffle,
   createTimeSlots,
 } from '../../utils/helpers';
@@ -23,6 +22,7 @@ import {
   handleSelect,
   renderWeekdayOption,
   addEventsToGoogleCal,
+  parseTimeSlotWindowAsUnix,
 } from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
 
@@ -89,7 +89,19 @@ const EventForm = (props: EventFormProps) => {
   const addEvents = async (calendarId: string, eventsToAdd: EventsToAdd[]) => {
     try {
       const occupiedSlots = getOccupiedSlots(eventList); // THIS GUY WAS OUTSIDE THIS FUNCTION BEFORE NOT SURE IF IT MAKES SENSE TO MOVE HIM IN
-
+      console.log(
+        'occupied at the start',
+        occupiedSlots.map(
+          timeslot =>
+            `${new Date(timeslot.start).getHours()}:${new Date(
+              timeslot.start
+            ).getMinutes()} the ${new Date(
+              timeslot.start
+            ).getDate()} to ${new Date(timeslot.end).getHours()}:${new Date(
+              timeslot.end
+            ).getMinutes()} the ${new Date(timeslot.end).getDate()}`
+        )
+      );
       for (let i = 0; i < eventsToAdd.length; i++) {
         const { startWindow, endWindow, duration, title, description } =
           eventsToAdd[i];
@@ -133,7 +145,19 @@ const EventForm = (props: EventFormProps) => {
             )
           )
         );
-        console.log('these are considered occupied', occupiedSlots);
+        console.log(
+          'these are considered occupied',
+          occupiedSlots.map(
+            timeslot =>
+              `${new Date(timeslot.start).getHours()}:${new Date(
+                timeslot.start
+              ).getMinutes()} the ${new Date(
+                timeslot.start
+              ).getDate()} to ${new Date(timeslot.end).getHours()}:${new Date(
+                timeslot.end
+              ).getMinutes()} the ${new Date(timeslot.end).getDate()}`
+          )
+        );
         if (!unoccupiedSlots.length) {
           throw new Error(`Couldn't find time slot for ${title}`);
         }
@@ -173,9 +197,9 @@ const EventForm = (props: EventFormProps) => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const calendarId = eventSelectCalendar.current?.value || 'primary';
     try {
       e.preventDefault();
-      const calendarId = eventSelectCalendar.current?.value || 'primary';
       const eventsToAdd = parseEventsToAdd(
         inputsToDisplay,
         eventTimeStart,
@@ -190,6 +214,7 @@ const EventForm = (props: EventFormProps) => {
       setInputsToDisplay(1);
     } catch (error) {
       console.log('this is the erorr', (error as Error).message);
+      await fetchCalendarData(calendarId);
       toast.warn((error as Error).message);
     }
   };
