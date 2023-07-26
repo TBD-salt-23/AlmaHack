@@ -1,7 +1,8 @@
 .event__form__input-container {
   position: relative;
   width: 100%;
-  margin-top: 0.5em;
+  /* margin-top: 0.5em; */
+  margin: 0.5em;
   display: grid;
   grid-template-columns: 70% 10% 20%;
   grid-template-rows: auto;
@@ -15,7 +16,8 @@
 .event__form__input-container__last {
   position: relative;
   width: 100%;
-  margin-top: 0.5em;
+  /* margin-top: 0.5em; */
+  margin: 0.5em;
   display: grid;
   grid-template-columns: 70% 10% 20%;
   grid-template-rows: auto;
@@ -31,12 +33,14 @@
 
 @keyframes example {
   0% {
+    z-index: -1;
     opacity: 0;
-    top: -100px;
+    bottom: -100px;
   }
   100% {
+    z-index: 0;
     opacity: 100%;
-    top: 0px;
+    bottom: 0px;
   }
 }
 

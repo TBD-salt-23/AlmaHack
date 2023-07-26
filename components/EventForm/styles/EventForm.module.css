@@ -97,3 +97,10 @@
   flex-direction: column;
   gap: 3px;
 }
+
+.event__form__input__section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1em;
+}

@@ -302,14 +302,16 @@ const EventForm = (props: EventFormProps) => {
         <h2>
           {inputsToDisplay > 1 ? '2. Add your tasks!' : '2. Add your task!'}
         </h2>
-        {returnNewEventInfo(
-          titleArr,
-          durationArr,
-          descriptionArr,
-          inputsToDisplay,
-          storedValueArray,
-          incrementInputLines
-        )}
+        <section className={styles.event__form__input__section}>
+          {returnNewEventInfo(
+            titleArr,
+            durationArr,
+            descriptionArr,
+            inputsToDisplay,
+            storedValueArray,
+            incrementInputLines
+          )}
+        </section>
         <button className={styles.submit__button} id="inputForm" type="submit">
           Submit
         </button>
