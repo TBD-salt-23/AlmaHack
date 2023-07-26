@@ -1,24 +1,4 @@
 import { DAYS_OF_WEEK } from './consts';
-import { WeekdayAndBoolean } from './types';
-
-const returnAsDoubleDigit = (number: number) =>
-  number.toString().length !== 2 ? `0${number}` : `${number}`;
-// {
-//   if (number.toString().length !== 2) {
-//     return `0${number}`;
-//   }
-//   return `${number}`;
-// };
-
-export const createTimeSlots = () => {
-  const timeSlotArray: string[] = [];
-  for (let h = 0; h < 24; h++) {
-    for (let m = 0; m < 60; m += 15) {
-      timeSlotArray.push(`${returnAsDoubleDigit(h)}:${returnAsDoubleDigit(m)}`);
-    }
-  }
-  return timeSlotArray;
-};
 
 export const parseTimeNicely = (time: string) =>
   `${DAYS_OF_WEEK[new Date(time).getDay() as keyof typeof DAYS_OF_WEEK]} ${

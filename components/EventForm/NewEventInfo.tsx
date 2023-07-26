@@ -22,7 +22,13 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
 
   return (
     <>
-      <div className={styles['event__form__input-container']}>
+      <div
+        className={
+          incrementInputLines
+            ? styles['event__form__input-container__last']
+            : styles['event__form__input-container']
+        }
+      >
         <label htmlFor={`eventTitle${uuid}`} className={styles.taskTitle}>
           Task
         </label>
@@ -68,7 +74,7 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           ref={descriptionRef}
           type="text"
           id={`eventDescription${uuid}`}
-          placeholder="Notes..."
+          placeholder="Notes... (Optional)"
           defaultValue={storedValue.description}
         />
       </div>

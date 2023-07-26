@@ -294,3 +294,34 @@ export const parseTimeSlotWindowAsUnix = (
   }
   return appropriateTimeSlotsPerDay;
 };
+
+const returnAsDoubleDigit = (number: number) =>
+  number.toString().length !== 2 ? `0${number}` : `${number}`;
+// {
+//   if (number.toString().length !== 2) {
+//     return `0${number}`;
+//   }
+//   return `${number}`;
+// };
+
+export const createTimeSlots = () => {
+  const timeSlotArray: string[] = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 15) {
+      timeSlotArray.push(`${returnAsDoubleDigit(h)}:${returnAsDoubleDigit(m)}`);
+    }
+  }
+  return timeSlotArray;
+};
+
+export const displayWeekdaysInProperOrder = (
+  weekdaysAvailable: WeekdayAndBoolean[]
+) => {
+  return weekdaysAvailable.map((_day, i) => {
+    let dayToRender = weekdaysAvailable[i + 1];
+    if (i === 6) {
+      dayToRender = weekdaysAvailable[0];
+    }
+    return renderWeekdayOption(dayToRender);
+  });
+};

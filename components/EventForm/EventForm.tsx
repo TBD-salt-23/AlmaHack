@@ -1,10 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import axios from 'axios';
-import {
-  hoursToMiliseconds,
-  shuffle,
-  createTimeSlots,
-} from '../../utils/helpers';
+import { hoursToMiliseconds, shuffle } from '../../utils/helpers';
 import {
   CalendarResponse,
   StoredValue,
@@ -20,9 +15,10 @@ import {
   parseEventsToAdd,
   returnNewEventInfo,
   handleSelect,
-  renderWeekdayOption,
   addEventsToGoogleCal,
   parseTimeSlotWindowAsUnix,
+  createTimeSlots,
+  displayWeekdaysInProperOrder,
 } from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
 
@@ -231,48 +227,50 @@ const EventForm = (props: EventFormProps) => {
             className={styles.event__form__label__timeinput}
             htmlFor="timeSlot"
           >
-            Time Slot
+            <h2 className={styles.event__form__label__timeinput}>
+              1. When are you free?{' '}
+            </h2>
           </label>
           <div className={styles.event__form__timeinput}>
-            <input
-              type="time"
-              ref={eventTimeStart}
-              min={'00:00'}
-              max={'23:59'}
-              step={900}
-              id="timeSlot"
-              list="time_list_min"
-              required
-            ></input>
-            <datalist id="time_list_min">
-              {createTimeSlots().map(timeslot => (
-                <option value={timeslot} key={uuid()}></option>
-              ))}
-            </datalist>
+            <div className={styles.event__form_timeinput__min}>
+              <label>From</label>
+              <input
+                type="time"
+                ref={eventTimeStart}
+                min={'00:00'}
+                max={'23:59'}
+                step={900}
+                id="timeSlot"
+                list="time_list_min"
+                required
+              ></input>
+              <datalist id="time_list_min">
+                {createTimeSlots().map(timeslot => (
+                  <option value={timeslot} key={uuid()}></option>
+                ))}
+              </datalist>
+            </div>
             <span> - </span>
-            <input
-              type="time"
-              ref={eventTimeEnd}
-              min={'00:00'}
-              max={'23:59'}
-              step={900}
-              list="time_list_max"
-              required
-            ></input>
-            <datalist id="time_list_max">
-              {createTimeSlots().map(timeslot => (
-                <option value={timeslot} key={uuid()}></option>
-              ))}
-            </datalist>
+            <div className={styles.event__form_timeinput__max}>
+              <label>Until</label>
+              <input
+                type="time"
+                ref={eventTimeEnd}
+                min={'00:00'}
+                max={'23:59'}
+                step={900}
+                list="time_list_max"
+                required
+              ></input>
+              <datalist id="time_list_max">
+                {createTimeSlots().map(timeslot => (
+                  <option value={timeslot} key={uuid()}></option>
+                ))}
+              </datalist>
+            </div>
           </div>
           <ul className={styles.event__form__weekdays__list}>
-            {weekdaysAvailable.map((_day, i) => {
-              let dayToRender = weekdaysAvailable[i + 1];
-              if (i === 6) {
-                dayToRender = weekdaysAvailable[0];
-              }
-              return renderWeekdayOption(dayToRender);
-            })}
+            {displayWeekdaysInProperOrder(weekdaysAvailable)}
           </ul>
           <label
             className={styles.event__form__label__calendarselect}
@@ -301,6 +299,9 @@ const EventForm = (props: EventFormProps) => {
             </select>
           </div>
         </div>
+        <h2>
+          {inputsToDisplay > 1 ? '2. Add your tasks!' : '2. Add your task!'}
+        </h2>
         {returnNewEventInfo(
           titleArr,
           durationArr,
