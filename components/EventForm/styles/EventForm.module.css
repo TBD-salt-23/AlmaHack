@@ -95,6 +95,7 @@
 .event__form__label__calendarselect {
   font-weight: bold;
 }
+
 /* 
 @media only screen and (max-width: 600px) {
   .event__form__weekdays__list {
@@ -116,10 +117,12 @@
   gap: 1em;
 }
 
-.event__form__weekday_checkbox__square {
+/* .event__form__weekday_checkbox__square {
+  -webkit-appearance: none;
   appearance: none;
   background-color: #fff;
   margin: 0;
+
   font: inherit;
   color: currentColor;
   width: 1.15em;
@@ -127,25 +130,32 @@
   border: 0.15em solid currentColor;
   border-radius: 0.15em;
   transform: translateY(-0.075em);
-}
+  /* 
+  display: grid;
+  place-content: center; */
+/* } */
 
-.event__form__weekday_checkbox__square:checked {
+/* .event__form__weekday_checkbox__square:checked {
   background-color: rgb(255, 193, 7);
   border: 1px solid black;
 }
 
 .event__form__weekday_checkbox__square::before {
-  content: '';
+  content: "";
   width: 0.65em;
   height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
   transform: scale(0);
+  transform-origin: bottom left;
   transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em var(--form-control-color);
+  box-shadow: inset 1em 1em red; */
+/* Windows High Contrast Mode */
+/* background-color: black;
 }
 
 .event__form__weekday_checkbox__square:checked::before {
   transform: scale(1);
-}
+} */
 
 .event__form__input__heading {
   text-shadow: 1px 1px black;
