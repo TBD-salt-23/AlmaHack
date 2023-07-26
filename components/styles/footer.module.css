@@ -23,3 +23,7 @@
 .contactLink {
   color: #e64a19;
 }
+
+.contactLink:hover {
+  color: #fe5f2f
+}

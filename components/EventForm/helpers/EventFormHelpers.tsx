@@ -94,6 +94,7 @@ export const renderWeekdayOption = (day: WeekdayAndBoolean) => {
   return (
     <li key={uniqueKey} className={styles.event__form__weekday_checkbox}>
       <input
+        className={styles.event__form__weekday_checkbox__square}
         id={`day_${uniqueKey}`}
         type="checkbox"
         defaultChecked={day.checked}
@@ -152,7 +153,7 @@ export const returnNewEventInfo = (
 };
 
 export const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
-  return content.map(event => {
+  return content.map((event) => {
     return {
       start: new Date(event.start.dateTime).getTime(),
       // end: new Date(event.end.dateTime).getTime(),
@@ -213,7 +214,7 @@ export const filterOccupiedSlots = (
       freeQuartersByDay.push(currentPosValue);
       console.log(
         'after pushing free quarters, it looks like this',
-        freeQuartersByDay.map(timeslot => {
+        freeQuartersByDay.map((timeslot) => {
           return `${new Date(timeslot).getHours()}:${new Date(
             timeslot
           ).getMinutes()} the ${new Date(timeslot).getDate()}`;
@@ -228,8 +229,8 @@ export const filterOccupiedSlots = (
           unoccupiedSlots.push(possibleTimeSlot);
           console.log(
             'we found a guy! We are adding him! Unoccupied slots looks like this',
-            unoccupiedSlots.map(array =>
-              array.map(timeslot => {
+            unoccupiedSlots.map((array) =>
+              array.map((timeslot) => {
                 return `${new Date(timeslot).getHours()}:${new Date(
                   timeslot
                 ).getMinutes()} the ${new Date(timeslot).getDate()}`;
