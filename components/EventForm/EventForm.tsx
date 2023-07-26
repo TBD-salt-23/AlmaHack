@@ -281,7 +281,7 @@ const EventForm = (props: EventFormProps) => {
             </select>
           </div>
         </div>
-        <h2>
+        <h2 className={styles.event__form__input__heading}>
           {inputsToDisplay > 1 ? '2. Add your tasks!' : '2. Add your task!'}
         </h2>
         <section className={styles.event__form__input__section}>

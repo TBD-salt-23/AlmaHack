@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   /* margin-top: 0.5em; */
-  margin: 0.5em;
+  margin: 0.5em 0;
   display: grid;
   grid-template-columns: 70% 10% 20%;
   grid-template-rows: auto;
@@ -17,7 +17,7 @@
   position: relative;
   width: 100%;
   /* margin-top: 0.5em; */
-  margin: 0.5em;
+  margin: 0.5em 0;
   display: grid;
   grid-template-columns: 70% 10% 20%;
   grid-template-rows: auto;

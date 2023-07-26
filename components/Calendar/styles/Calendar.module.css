@@ -17,7 +17,7 @@
   -moz-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   max-width: 750px;
   transition: max-width 0.2s ease-in-out;
-    transition: box-shadow 0.2s ease-in-out;
+  transition: box-shadow 0.2s ease-in-out;
 }
 
 .event__list-item:hover {
@@ -39,8 +39,11 @@
 }
 
 .upcoming__events__heading {
+  margin-top: 3rem;
+  font-size: 2rem;
   text-align: center;
-  border-bottom: 1px solid gray;
+  color: white;
+  text-shadow: 1px 1px black;
 }
 
 .event__from {

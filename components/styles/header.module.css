@@ -5,14 +5,14 @@
 }
 
 .navbar {
-  flex: 1
+  flex: 1;
 }
 
 .navbar__list {
   list-style: none;
   display: flex;
   justify-content: space-evenly;
-  padding: 0
+  padding: 0;
 }
 
 .loading,
@@ -80,7 +80,7 @@
 }
 
 .buttonPrimary {
-  background-color: #FFC107;
+  background-color: #ffc107;
 
   color: #fff;
   text-decoration: none;
@@ -99,4 +99,8 @@
   margin-left: 2em;
   font-weight: bold;
   text-decoration: none;
+  text-shadow: -1px 0 #e64a19, 0 1px #e64a19, 2px 0 #e64a19, 0 -1px #e64a19;
+  background-color: #ffbf69;
+  padding: 10px;
+  border-radius: 20px;
 }

@@ -17,7 +17,7 @@
   max-width: 800px;
   margin: 0 auto;
   margin-top: 1em;
-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   -webkit-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   transition: box-shadow 0.2s ease-in-out;
@@ -57,7 +57,7 @@ box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
 .event__form__weekdays__list {
   display: flex;
   padding: 0;
-  gap: 8px;
+  gap: 20px;
   margin: 0.5em 0 0 0;
 }
 
@@ -89,17 +89,18 @@ box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
 
 .event__form__label__timeinput {
   margin: 5px 0 10px 0;
+  text-shadow: 1px 1px black;
 }
 
 .event__form__label__calendarselect {
   font-weight: bold;
 }
-
+/* 
 @media only screen and (max-width: 600px) {
   .event__form__weekdays__list {
     gap: 15px;
   }
-}
+} */
 
 .event__form_timeinput__max,
 .event__form_timeinput__min {
@@ -111,7 +112,7 @@ box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
 .event__form__input__section {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 80%;
   gap: 1em;
 }
 
@@ -126,7 +127,6 @@ box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
   border: 0.15em solid currentColor;
   border-radius: 0.15em;
   transform: translateY(-0.075em);
-
 }
 
 .event__form__weekday_checkbox__square:checked {
@@ -135,7 +135,7 @@ box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
 }
 
 .event__form__weekday_checkbox__square::before {
-  content: "";
+  content: '';
   width: 0.65em;
   height: 0.65em;
   transform: scale(0);
@@ -145,5 +145,14 @@ box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.4);
 
 .event__form__weekday_checkbox__square:checked::before {
   transform: scale(1);
+}
 
+.event__form__input__heading {
+  text-shadow: 1px 1px black;
+}
+
+@media (min-width: 667px) {
+  .event__form__input__section {
+    width: 100%;
+  }
 }
