@@ -3,6 +3,7 @@ import './styles.css';
 
 import type { AppProps } from 'next/app';
 import type { Session } from 'next-auth';
+import Head from 'next/head';
 
 export default function App({
   Component,
@@ -10,8 +11,13 @@ export default function App({
 }: AppProps<{ session: Session }>) {
   console.log('This is session', session);
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </>
   );
 }
