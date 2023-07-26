@@ -1,6 +1,4 @@
-import Link from 'next/link';
 import styles from 'components/styles/footer.module.css';
-import packageJSON from '../package.json';
 import { shuffle } from '../utils/helpers';
 import { useEffect } from 'react';
 const DEVELOPER_ARRAY = [
