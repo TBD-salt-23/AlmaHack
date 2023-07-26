@@ -83,7 +83,7 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
             className={styles.newLineButton}
             type="button"
           >
-            Add task
+            + Add task
           </button>
         ) : (
           ''
