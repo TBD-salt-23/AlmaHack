@@ -81,6 +81,7 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           <button
             onClick={incrementInputLines}
             className={styles.newLineButton}
+            type="button"
           >
             Add task
           </button>
