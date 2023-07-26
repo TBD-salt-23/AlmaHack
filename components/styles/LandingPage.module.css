@@ -20,7 +20,8 @@
   font-size: 2em;
   text-align: center;
   color: white;
-  margin-block: 1.5em;
+  margin-top: 4em;
+  margin-bottom: 2em;
   text-shadow: -1px 0 #e64a19, 0 1px #e64a19, 3px 0 #e64a19, 0 -1px #e64a19;
 }
 
