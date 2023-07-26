@@ -7,8 +7,11 @@ Scheduling our own tasks is often both the source of our power and the cause of 
 ## Getting Started
 Getting started is easy - simply log in with your Google account and add a new task. Our app will schedule your errands in your Google Calendar for the upcoming week during the specified time slot. Then, all you have to do is complete your tasks!
 
-**Mobile view:** <br/>
-<img width="379" alt="image" src="https://github.com/TBD-salt-23/AlmaHack/assets/111148748/7d17c0cd-045d-4e6a-9d7d-aa86e7a174f9">
+
+
+https://github.com/TBD-salt-23/AlmaHack/assets/111148748/869c756e-7afd-4456-85e8-1bca8facc09f
+
+
 
 Our app is intuitive and user-friendly, making it accessible to anyone. It seamlessly syncs with your Google Calendar, allowing you to add new tasks from anywhere - whether you're using your phone, tablet, or computer.
 
