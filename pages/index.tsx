@@ -25,7 +25,7 @@ export default function IndexPage() {
         (error as Error).message
       );
       //this is a bit of a lie
-      toast.error('Session expired! Sign out and back in :)');
+      toast.error('Please refresh the page :)');
     }
   };
   useEffect(() => {

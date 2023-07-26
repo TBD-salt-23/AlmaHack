@@ -27,7 +27,7 @@ export default function Calendar(props: CalendarProps) {
         <button
           className={styles.upcoming__events__deleteBtn}
           onClick={async () => {
-            toast(`Deleting ${event.summary}`);
+            toast.success(`Deleting ${event.summary}`);
             await handleDelete(calendarId, event.id);
             await fetchCalendarData(calendarId);
           }}
