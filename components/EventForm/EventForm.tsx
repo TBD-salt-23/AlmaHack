@@ -164,14 +164,18 @@ const EventForm = (props: EventFormProps) => {
               ).getMinutes()} the ${new Date(timeslot.end).getDate()}`
           )
         ) */ if (!appropriateSlots.length) {
-          throw new Error(`Couldn't find time slot for ${title}`);
+          //throw new Error(`Couldn't find time slot for ${title}`);
+          toast.error(`Couldn't find time slot for ${title}`);
+          return;
         }
 
         const [possibleQuarters] = shuffle(appropriateSlots) as number[][];
         const [startTime] = shuffle(possibleQuarters) as number[];
         if (!startTime) {
           console.log(`The start time for ${title} is ${startTime}`);
-          throw new Error(`Couldn't find time for ${title}`);
+          //throw new Error(`Couldn't find time for ${title}`);
+          toast.error(`Couldn't find start time for ${title}`);
+          return;
         }
         const endTime = startTime + durationMiliseconds;
 
