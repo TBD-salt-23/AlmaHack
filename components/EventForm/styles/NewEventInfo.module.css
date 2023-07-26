@@ -100,7 +100,7 @@
   text-shadow: 1px 1px black;
   font-size: 1rem;
   margin-top: 15px;
-  padding: 5px 0;
+  padding: 10px 5px;
 }
 .newLineButton:hover {
   background-color: rgb(255 205 57);
