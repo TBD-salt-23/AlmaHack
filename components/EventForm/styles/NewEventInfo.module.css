@@ -25,13 +25,13 @@
     'taskTitle . durationTitle'
     'taskContent . durationContent'
     'descriptionT . .'
-    'descriptionC descriptionC descriptionC';
-  transition: example 330ms ease--out;
-  animation-name: example;
+    'descriptionC descriptionC descriptionC'
+    '. . newLineButton';
+  animation-name: fromBelow;
   animation-duration: 0.5s;
 }
 
-@keyframes example {
+@keyframes fromBelow {
   0% {
     z-index: -1;
     opacity: 0;
@@ -86,6 +86,28 @@
 
 .descriptionC {
   grid-area: descriptionC;
+}
+
+.newLineButton {
+  grid-area: newLineButton;
+  padding: 0;
+  background-color: rgb(255, 193, 7);
+  border-style: none;
+  border-radius: 1.5em;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px black;
+  font-size: 1rem;
+  margin-top: 15px;
+  padding: 5px 0;
+}
+.newLineButton:hover {
+  background-color: rgb(255 205 57);
+}
+
+.newLineButton:active {
+  background-color: rgba(255, 193, 7, 0.577);
 }
 
 .descriptionC,

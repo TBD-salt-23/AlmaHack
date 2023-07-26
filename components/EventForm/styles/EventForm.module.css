@@ -37,13 +37,15 @@
 
 .submit__button {
   background-color: rgb(255, 193, 7);
-  color: black;
   border-style: none;
   border-radius: 1.5em;
   padding: 1em 2em;
   margin-top: 1em;
   cursor: pointer;
   font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px black;
+  font-size: 1rem;
 }
 
 .submit__button:hover {

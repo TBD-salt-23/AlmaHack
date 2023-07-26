@@ -39,11 +39,11 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           id={`eventTitle${uuid}`}
           placeholder="Event summary..."
           defaultValue={storedValue.title}
-          onFocus={() => {
-            if (incrementInputLines) {
-              incrementInputLines();
-            }
-          }}
+          // onFocus={() => {
+          //   if (incrementInputLines) {
+          //     incrementInputLines();
+          //   }
+          // }}
         />
 
         <label
@@ -77,6 +77,16 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           placeholder="Notes... (Optional)"
           defaultValue={storedValue.description}
         />
+        {incrementInputLines ? (
+          <button
+            onClick={incrementInputLines}
+            className={styles.newLineButton}
+          >
+            Add task
+          </button>
+        ) : (
+          ''
+        )}
       </div>
     </>
   );

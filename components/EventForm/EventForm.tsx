@@ -295,7 +295,7 @@ const EventForm = (props: EventFormProps) => {
           )}
         </section>
         <button className={styles.submit__button} id="inputForm" type="submit">
-          Submit
+          Add to calendar
         </button>
       </form>
     </section>
