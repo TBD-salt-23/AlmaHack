@@ -10,7 +10,6 @@ import { v4 as uuid } from 'uuid';
 import { toast } from 'react-toastify';
 import { useSession } from 'next-auth/react';
 import {
-  filterOccupiedSlots,
   getOccupiedSlots,
   parseEventsToAdd,
   returnNewEventInfo,
@@ -19,6 +18,8 @@ import {
   parseTimeSlotWindowAsUnix,
   createTimeSlots,
   displayWeekdaysInProperOrder,
+  removeOccupiedSlots,
+  getAppropriateSlots,
 } from './helpers/EventFormHelpers';
 import styles from './styles/EventForm.module.css';
 
@@ -108,15 +109,35 @@ const EventForm = (props: EventFormProps) => {
           throw new Error('Start time must be earlier than end time');
         }
         const durationMiliseconds = hoursToMiliseconds(parseInt(duration));
-        const windowAsUnix = parseTimeSlotWindowAsUnix(
+        const timeframeByDay = parseTimeSlotWindowAsUnix(
           startWindow,
           endWindow,
           durationMiliseconds,
           weekdaysAvailable
         );
-        const unoccupiedSlots = filterOccupiedSlots(
+        const unoccupiedSlots = removeOccupiedSlots(
           occupiedSlots,
-          windowAsUnix,
+          timeframeByDay
+        );
+        const appropriateSlots = getAppropriateSlots(
+          unoccupiedSlots,
+          durationMiliseconds
+        );
+        console.log(
+          'This is the appropriate slots',
+          appropriateSlots.map(slotArray =>
+            slotArray.map(
+              timeslot =>
+                `${new Date(timeslot).getHours()}:${new Date(
+                  timeslot
+                ).getMinutes()} the ${new Date(timeslot).getDate()}`
+            )
+          )
+        );
+
+        /* const unoccupiedSlots = filterOccupiedSlots(
+          occupiedSlots,
+          timeframeByDay,
           durationMiliseconds
         );
         console.log(
@@ -142,12 +163,11 @@ const EventForm = (props: EventFormProps) => {
                 timeslot.end
               ).getMinutes()} the ${new Date(timeslot.end).getDate()}`
           )
-        );
-        if (!unoccupiedSlots.length) {
+        ) */ if (!appropriateSlots.length) {
           throw new Error(`Couldn't find time slot for ${title}`);
         }
 
-        const [possibleQuarters] = shuffle(unoccupiedSlots) as number[][];
+        const [possibleQuarters] = shuffle(appropriateSlots) as number[][];
         const [startTime] = shuffle(possibleQuarters) as number[];
         if (!startTime) {
           console.log(`The start time for ${title} is ${startTime}`);

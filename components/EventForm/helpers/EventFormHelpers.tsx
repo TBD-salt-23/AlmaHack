@@ -153,7 +153,7 @@ export const returnNewEventInfo = (
 };
 
 export const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
-  return content.map((event) => {
+  return content.map(event => {
     return {
       start: new Date(event.start.dateTime).getTime(),
       // end: new Date(event.end.dateTime).getTime(),
@@ -162,7 +162,7 @@ export const getOccupiedSlots = (content: ApiEvent[]): Slot[] => {
   });
 };
 
-export const filterOccupiedSlots = (
+/* export const filterOccupiedSlots = (
   occupiedSlots: Slot[],
   timeframeByDay: number[][],
   durationMiliseconds: number
@@ -214,7 +214,7 @@ export const filterOccupiedSlots = (
       freeQuartersByDay.push(currentPosValue);
       console.log(
         'after pushing free quarters, it looks like this',
-        freeQuartersByDay.map((timeslot) => {
+        freeQuartersByDay.map(timeslot => {
           return `${new Date(timeslot).getHours()}:${new Date(
             timeslot
           ).getMinutes()} the ${new Date(timeslot).getDate()}`;
@@ -229,8 +229,8 @@ export const filterOccupiedSlots = (
           unoccupiedSlots.push(possibleTimeSlot);
           console.log(
             'we found a guy! We are adding him! Unoccupied slots looks like this',
-            unoccupiedSlots.map((array) =>
-              array.map((timeslot) => {
+            unoccupiedSlots.map(array =>
+              array.map(timeslot => {
                 return `${new Date(timeslot).getHours()}:${new Date(
                   timeslot
                 ).getMinutes()} the ${new Date(timeslot).getDate()}`;
@@ -244,6 +244,111 @@ export const filterOccupiedSlots = (
   }
   console.log('these slots are unoccupied before returning', unoccupiedSlots);
   return unoccupiedSlots;
+}; */
+
+export const removeOccupiedSlots = (
+  occupiedSlots: Slot[],
+  timeframeByDay: number[][]
+) => {
+  const confirmedOccupiedSlots = [];
+  let freeQuartersByWeek: number[][][] = [];
+
+  for (
+    let dayIterator = 0;
+    dayIterator < timeframeByDay.length;
+    dayIterator++
+  ) {
+    const freeSlotsByDay: number[][] = [];
+    let freeQuarters: number[] = [];
+    const dayToCheck = timeframeByDay[dayIterator];
+    for (
+      let timeSlotForDayIterator = 0;
+      timeSlotForDayIterator < dayToCheck.length;
+      timeSlotForDayIterator++
+    ) {
+      const currentPosValue = dayToCheck[timeSlotForDayIterator];
+      let slotIsOccupied = false;
+      for (
+        let occupiedSlotIterator = 0;
+        occupiedSlotIterator < occupiedSlots.length;
+        occupiedSlotIterator++
+      ) {
+        const currentOccValue = occupiedSlots[occupiedSlotIterator];
+        if (
+          currentPosValue > currentOccValue.start &&
+          currentPosValue <= currentOccValue.end
+        ) {
+          slotIsOccupied = true;
+        }
+      }
+      if (slotIsOccupied) {
+        confirmedOccupiedSlots.push(currentPosValue);
+        if (freeQuarters.length) {
+          freeSlotsByDay.push(freeQuarters);
+        }
+        freeQuarters = [];
+        if (timeSlotForDayIterator === dayToCheck.length - 1) {
+          freeQuartersByWeek.push(freeSlotsByDay);
+        }
+        continue;
+      }
+      freeQuarters.push(currentPosValue);
+      console.log(
+        'after pushing free quarters, it looks like this',
+        freeSlotsByDay.map(slotArray =>
+          slotArray.map(
+            timeslot =>
+              `${new Date(timeslot).getHours()}:${new Date(
+                timeslot
+              ).getMinutes()} the ${new Date(timeslot).getDate()}`
+          )
+        )
+      );
+      if (timeSlotForDayIterator === dayToCheck.length - 1) {
+        if (freeQuarters) {
+          freeSlotsByDay.push(freeQuarters);
+        }
+        freeQuartersByWeek.push(freeSlotsByDay);
+      }
+    }
+  }
+  console.log(
+    'I hope this guy has all the stuff, by day',
+    freeQuartersByWeek.map(slotArray =>
+      slotArray.map(slotArray =>
+        slotArray.map(
+          timeslot =>
+            `${new Date(timeslot).getHours()}:${new Date(
+              timeslot
+            ).getMinutes()} the ${new Date(timeslot).getDate()}`
+        )
+      )
+    )
+  );
+  return freeQuartersByWeek;
+};
+
+export const getAppropriateSlots = (
+  unoccupiedSlots: number[][][],
+  durationMiliseconds: number
+) => {
+  const quartersInDuration = durationMiliseconds / fifteenMinutesInMiliseconds;
+  const appropriateSlots: number[][] = [];
+  for (let i = 0; i < unoccupiedSlots.length; i++) {
+    const dayToCheck = unoccupiedSlots[i];
+    for (let j = 0; j < dayToCheck.length; j++) {
+      const timeSlotToCheck = dayToCheck[j];
+      if (timeSlotToCheck.length > quartersInDuration) {
+        console.log(
+          `These timeslots ${timeSlotToCheck.length} is longer than quarters in duration ${quartersInDuration}`
+        );
+        appropriateSlots.push(
+          timeSlotToCheck.slice(0, quartersInDuration * -1)
+        );
+      }
+    }
+  }
+  return appropriateSlots;
 };
 
 const hoursMinutesToUnix = (timeWindow: string) => {
