@@ -25,6 +25,13 @@
   text-shadow: -1px 0 #e64a19, 0 1px #e64a19, 3px 0 #e64a19, 0 -1px #e64a19;
 }
 
+.buttonPrimary {
+  background-color: #ffc107;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 0.3rem;
+}
 @media only screen and (min-width: 600px) {
   .landing__info {
     border-radius: 0.5em;

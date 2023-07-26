@@ -22,6 +22,7 @@ const LandingPage = () => {
           is do it!
         </p>
         <p>
+          <br />
           <a
             href={`/api/auth/signin`}
             className={styles.buttonPrimary}
