@@ -53,6 +53,8 @@ const NewEventInfo = forwardRef((props: NewEventInfoProps) => {
           id={`eventDuration${uuid}`}
           placeholder="Hours..."
           defaultValue={storedValue.duration}
+          min={0}
+          max={23}
         />
 
         <label
