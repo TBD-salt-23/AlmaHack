@@ -114,17 +114,6 @@ const EventForm = (props: EventFormProps) => {
           durationMiliseconds,
           weekdaysAvailable
         );
-        console.log(
-          'this is windowAsUnix',
-          windowAsUnix.map(slotArray =>
-            slotArray.map(
-              timeslot =>
-                `${new Date(timeslot).getHours()}:${new Date(
-                  timeslot
-                ).getMinutes()} the ${new Date(timeslot).getDate()}`
-            )
-          )
-        );
         const unoccupiedSlots = filterOccupiedSlots(
           occupiedSlots,
           windowAsUnix,
@@ -178,14 +167,7 @@ const EventForm = (props: EventFormProps) => {
           start: startTime,
           end: endTime,
         });
-
-        // occupiedSlots.push({ THIS GUY MAYBE IS SUPER NECESSARY I HAVE CHANGED HIM TO WHAT IS ABOVE
-        //   start: body.googleEvent.start.dateTime.getTime(),
-        //   end: body.googleEvent.end.dateTime.getTime(),
-        // });
-        // const res = await axios.post(`/api/${calendarId}/postEvent`, body);
         toast.success(`Adding ${title} to your Google Calendar`);
-        // console.log(`Here is the res from ${title}`, res);
       }
     } catch (error) {
       throw new Error((error as Error).message);
