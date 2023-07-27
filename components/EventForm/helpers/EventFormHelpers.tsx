@@ -251,7 +251,7 @@ export const removeOccupiedSlots = (
   timeframeByDay: number[][]
 ) => {
   const confirmedOccupiedSlots = [];
-  let freeQuartersByWeek: number[][][] = [];
+  const freeQuartersByWeek: number[][][] = [];
 
   for (
     let dayIterator = 0;
